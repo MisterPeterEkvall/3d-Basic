@@ -62,15 +62,18 @@ English explanation of the four lines:
 
 This demonstrates the core idea: very small programs that produce immediately visible 3D results.
 
+
+
+## 3d Basic Window
+
+![3d Basic Window](https://github.com/user-attachments/assets/b6d4c112-313d-4b45-8a71-072497088c60)
+
+
+
 ## Contact & Links
 
 - Maintainer: Peter Ekvall (MisterPeterEkvall)
 - Demo: https://misterekvall.wixsite.com/peter-ekvall-store/team-3-62
 - Manual: https://misterekvall.wixsite.com/peter-ekvall-store/team-3-51
 
-
-
-
-## 3d Basic Window
-![3d Basic Window](https://github.com/user-attachments/assets/b6d4c112-313d-4b45-8a71-072497088c60)
 
