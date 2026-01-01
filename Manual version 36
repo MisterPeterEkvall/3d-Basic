@@ -1,0 +1,6002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Basic Manual</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .search-section {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .content-area {
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .word-list {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .word-item {
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+            color: #495057;
+        }
+        
+        .word-item:hover {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+        
+        .manual-content {
+            display: none;
+        }
+        
+        .manual-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .manual-text {
+            line-height: 1.8;
+            font-size: 1.05em;
+            color: #495057;
+            white-space: pre-wrap;
+        }
+        
+        .back-button {
+            display: none;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .back-button.active {
+            display: inline-block;
+        }
+        
+        .word-title {
+            font-size: 2em;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.2em;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+            
+            .content-area {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>3D Basic Manual</h1>
+            <p>Your complete guide to 3D Basic commands</p>
+        </div>
+        
+        <div class="search-section">
+            <input 
+                type="text" 
+                id="searchInput" 
+                class="search-input" 
+                placeholder="Search for a command..."
+                oninput="filterWords()"
+            >
+        </div>
+        
+        <div class="content-area">
+            <button class="back-button" id="backButton" onclick="showWordList()">
+                ← Back to List
+            </button>
+            
+            <div id="wordListView">
+                <!-- Word list will be generated here -->
+            </div>
+            
+            <div id="manualView" class="manual-content">
+                <div class="word-title" id="wordTitle"></div>
+                <div class="manual-text" id="manualText"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // PLACEHOLDER: ADD YOUR WORDS AND MANUALS HERE
+        // ============================================
+        
+        const manualData = {
+            // FORMAT:
+            // "wordname": "Manual content goes here...",
+            
+            // EXAMPLE ENTRIES (Replace with your own):
+            "animate": `**animate** - attribute
+
+The animate attribute is used to give an object or surface animated motion or change over time.
+
+Animation can control an objects position, size, rotation, and much more.
+You can specify start and end points, or multiple consecutive points to create a continuous path.
+
+The object will then move from the first to the last point in the order they are listed.
+
+Syntax:
+objectName.animate = (x1,y1,z1) to (x2,y2,z2)
+objectName.animate = (x1,y1,z1) to (x2,y2,z2) ... to (xN,yN,zN)
+
+Parameters: 
+(x, y, z) – The coordinates for each point in the path. 
+
+Example – Simple movement: 
+10 box1.animate = (1,1,1) to (2,1,1)   ' Box1 moves 1 meter along the X axis
+20 box1.draw
+
+Example – Movement between multiple points: 
+10 box1.animate = (0,0,0) to (10,0,0) to (10,10,0) to (0,10,0)
+20 box1.animate.time = 4 sec
+30 box1.draw`,
+
+            "box": `**box** - Create a Box Object
+
+The box object is a rectangular three-dimensional shape.
+The size is specified directly in meters for width, depth, and height.
+
+In 3D Basic, boxes are not only used as 3D objects but also as a way to create flat surfaces. By making the height very small, you can create floors, walls, or plates. If you want to display only the outline of a surface, you can make the box transparent and show only the edges using the edge attribute.
+
+Syntax:
+objectName.size = (width, depth, height)  
+
+Parameters:
+width – measurement along the x-axis (meters)
+depth – measurement along the y-axis (meters)
+height – measurement along the z-axis (meters)
+
+Example: A regular box 
+10 box1.size = (10, 5, 3)    ' A box 10 m wide, 5 m deep, and 3 m high  
+20 box1.color = red  
+30 box1.move = (0, 0, 0)    ' Placed at the origin  
+40 box1.draw  
+
+Example: Creating a filled flat surface with a box 
+box1.size = (4, 4, 0.01)     ' Very thin box
+box1.move = (0, 1, 0)        ' Placed in position
+box1.draw
+
+Example: Creating only the outline of a flat surface 
+box1.size = (4, 4, 0.01)    	 ' Very thin box
+box1.edge = true              	 ' Show only edges
+box1.transparent = 100    	 ' Fully transparent
+box1.draw`,
+
+            "color": `**color** - Set Object Color
+
+The color attribute is used to set the color of objects, windows, and backgrounds in 3D Basic.
+
+You can choose from:
+1. Built-in color names (listed below)
+2. Any hex color, using the format #RRGGBB
+3. The special color rnd or rndstill, which assigns a random color.
+
+When using rnd:
+Objects will get a new random color each time they are drawn.
+Backgrounds and continuously drawn objects will change color automatically every 0.5 seconds.
+
+Using Color
+
+Named Color Example
+10 box1.size=(2,2,2)
+20 box1.color=red
+30 box1.draw
+
+Hex Color Example 
+10 box1.size=(2,2,2)
+20 box1.color=#AFF807
+30 box1.draw
+
+Random Color Example 
+10 box1.size=(2,2,2)
+20 box1.color=rnd
+30 box1.draw
+
+
+
+
+Built-in Colors (grouped by color family) 
+
+Red Tones
+Name                            Description
+brick                           brick red
+crimson                         deep red
+colared                         strong red
+falu                            Swedish barn red
+fire                            bright red
+maroon                          dark wine red
+ruby                            ruby red
+sinoper                         earthy red
+burgundy                        dark red with purple tone
+red                             standard red
+
+
+
+Pink & Magenta 
+Name                            Description
+barbie                          bright pink
+cattleya                        orchid pink
+damask                          soft pink
+flamingo                        warm pink
+hotpink                         neon pink
+magenta                         pink-violet
+pink                            standard pink
+plum                            pink with purple tone
+salmon                          salmon pink
+
+
+
+Orange & Yellow 
+Name                            Description
+beige                           warm light orange
+bittersweet                     soft orange
+coral                           coral orange
+flame                           vivid orange
+gold                            golden yellow
+jonquil                         pale yellow
+khaki                           yellow-brown
+sandstorm                       sand yellow
+princeton                       bold orange
+orange                          standard orange
+skin                            skin tone
+wheat                           wheat yellow-orange
+yellow                          standard yellow
+
+
+
+Brown Tones 
+Name                            Description
+bark                            dark brown
+camel                           light brown
+chocolate                       chocolate brown
+sepia                           antique brown
+sienna                          earthy brown
+terracotta                      clay brown
+tan                             light brown / beige
+brown                           standard brown
+
+
+
+Green Tones 
+Name                            Description
+emerald                         emerald green
+forest                          deep forest green
+jade                            jade green
+lime                            bright green
+lightgreen                      light green
+neongreen                       neon bright green
+olive                           olive green
+mint                            pale cyan-green
+sage                            gray-green natural tone
+green                           standard green
+
+
+
+Blue Tones 
+Name                            Description
+aquamarine                      soft cyan-blue
+electricblue                    neon blue
+lightblue                       light blue
+navy                            dark navy blue
+royalblue                       royal blue
+sapphire                        deep blue
+steelblue                       steel-toned blue
+ylnmnblue                       modern pigment blue
+skyblue                         sky blue
+cerulean                        vivid clear blue
+blue                            standard blue
+
+
+
+Cyan / Turquoise Shades 
+Name                            Description
+cyan                            standard cyan
+mermaid                         turquoise cyan
+mint                            cyan-green
+turquoise                       turquoise
+
+
+
+Violet & Purple 
+Name                            Description
+aubergine                       dark purple
+blackvelvet                     very dark purple
+indigo                          blue-purple
+violet                          bright violet
+purple                          standard purple
+
+
+
+Gray & Black
+Name                            Description
+darkgray                        dark gray
+lightgray                       light gray
+silver                          metallic gray
+teal                            gray-blue tone
+paynesgrey                      cool dark gray
+gray                            standard gray
+midnight                        very dark black-blue
+obsidian                        volcanic black
+jet                             deep black
+charcoal                        charcoal gray (dark but not black)
+black                           standard black
+ 
+
+
+White & Pale Neutrals 
+Name                            Description
+almond                          warm white
+lavender                        soft violet white
+opal                            milky white
+peach                           pale peach white
+pearl                           pearl white
+white                           pure white
+
+
+
+Special 
+Name                            Description
+rnd                             random color (changes every 0.5 sec when active)
+rndstill                        random color no changes
+
+
+
+
+
+`,
+            "play": `**play* - instruction
+
+In 3D Basic, the play instruction starts the playback of a sound object.
+Just like .draw renders graphical objects, .play acts as a trigger instruction for sound — playback begins only when .play is executed.
+All sound settings should be configured before calling .play.
+
+This applies whether the sound comes from:
+a sound file loaded with .musicfile, or
+a note sequence defined with .notes and a synth type.
+
+Important:
+.musicfile or .notes only prepare the sound —
+actual playback starts only when you execute .play.
+
+Syntax:
+soundName.play
+
+Example 1 – play a note sequence:  
+10 sound1.sinesynth = 100 
+20 sound1.notes = "c e g"
+30 sound1.play
+
+Example 2 – play a sound file: 
+10 sound1.musicfile = "click.wav"
+20 sound1.volume = 80
+30 sound1.play
+
+Example 3 – start multiple sounds in sequence: 
+10 sound1.musicfile = "https://static.wixstatic.com/mp3/XXXXX.mp3"
+20 sound2.notes = "c1 e1 g1"
+30 sound1.play
+40 sound2.play
+Sounds start when .play is called for each respective object. 
+`,
+            "draw": `**draw** - Render instruction
+
+The draw instruction is used to render an object in the 3D view, display windows in 2D, play video files, or activate players. All settings and attributes applied to the object – such as size, color, material, filters, or position – only become visible once draw is called.
+
+If you do not call draw for an object, it will not appear until a global render is executed.
+You could say that .draw is one of the most frequently used words in 3D Basic. It looks almost like an attribute, but unlike attributes, .draw never receives a value, and it is always tied to a specific object.
+
+Syntax 
+objectName.draw
+
+Example 
+10 box1.size = (1, 1, 1)    ' Creates a box 1×1×1 meters
+20 box1.color = red
+30 box1.draw                    ' Draws the red box
+
+Tips
+draw only renders the current object.
+To render multiple objects, call draw on each object or use render to draw the entire scene at once.
+You can call draw multiple times on the same object if you modify its attributes during runtime.
+
+`,
+            "sleep": `**sleep** - instruction
+
+sleep is a global instruction that pauses the entire program for a specified duration.
+During the pause, all processes stop and no other instructions execute until the time has elapsed.
+
+If no time unit is specified, the default unit is seconds.
+
+Syntax
+sleep time
+
+time may be specified using the following units:
+ms, sec, min, h 
+
+Example 1 – A box animates, pauses for 2 seconds, then continues: 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=red
+40 box1.animate=(0,1,0) to (0,1,5)
+50 box1.draw
+60 sleep 2     ' same as 2sec
+70 box1.animate=(0,1,5) to (5,1,5)
+80 box1.draw
+
+
+`,
+            "ellipsoid": `**ellipsoid** - object
+
+The ellipsoid object has different radii along the x, y, and z directions.
+This means you can create an ellipsoid that is stretched or compressed along any axis.
+All measurements are given using the metric system. 
+
+Syntax:
+objectName.size = (radius_x, radius_y, radius_z) 
+
+Example: 
+10 ellipsoid1.size = (3, 2, 1)            ' An ellipsoid with different radii in each direction
+20 ellipsoid1.draw
+
+
+Labels:
+The ellipsoid object has only one label, e1, which can be used in the same way as any other label in 3D Basic. 
+
+Example: 
+10 glue box1.b1 to ellipsoid1.e1 = true
+Glues the surface b1 of the box to the label e1 of the ellipsoid 
+
+
+
+`,
+            "fill": `**fill** - attribute
+
+The fill attribute is used to fill 2D objects such as polygon and triangle in 3D Basic.
+When a 2D object is converted into a 3D object using thickness, the fill attribute is also required to prevent the object from being displayed as a wireframe.
+Without fill, only the edges of the object are drawn.
+With fill = true, the object is rendered as a solid filled surface.
+
+Syntax
+objectName.fill = true | false
+
+true = filled solid surface
+false = wireframe mode (default)
+
+Example 1 – 2D Object in Wireframe Mode (No Fill)  
+10 polygon1.size = (0,1,0) to (4,2,0) to (3,1,0)
+20 polygon1.fill = true
+30 polygon1.draw
+The object is drawn as a wireframe.  
+
+Example 2 – 2D Object with Fill 
+10 polygon1.size = (0,1,0) to (4,2,0) to (3,1,0)
+20 polygon1.fill = true
+30 polygon1.draw
+The object is drawn as a filled 2D surface. 
+
+Example 3 – 3D Object in Wireframe Mode (No Fill) ) 
+10 polygon1.size = (0,1,0) to (4,2,0) to (3,1,0)
+20 polygon1.thickness = 2
+30 polygon1.draw
+The object becomes a 3D wireframe object. 
+
+Example 4 – The object is rendered as a solid 3D object. 
+10 polygon1.size = (0,1,0) to (4,2,0) to (3,1,0)
+20 polygon1.thickness = 2
+30 polygon1.fill = true
+40 polygon1.draw
+The object is rendered as a solid 3D object. 
+
+
+Summary 
+Fill            2D Object               3D Object
+false           Wireframe               Wireframe
+true            Filled Surface          Solid Body
+
+
+`,
+            "image": `**image** - object
+
+The image attribute is used to apply an image texture to an entire object or to a specific surface of an object. The texture can also be rotated using the imagerotate attribute to match the object's orientation. 
+
+
+Syntax:
+objectName.image = "filename/URL"
+objectName.surfaceName.image = "filename/URL"
+
+-objectName = the object name
+-surfaceName = a specific surface of the object (e.g. b1)
+-"filename/URL" = built-in image name or a web address to the image
+
+
+Example 1 – The entire box gets a texture 
+10 box1.size = (1,1,1)      	  ' Creates a cube 1×1×1 meter
+20 box1.image = "rust"     	  ' Image is loaded from a built-in URL
+30 box1.draw                		  ' The cube is drawn with the "rust" texture
+
+
+Example 2 – Only one surface of the box gets a texture 
+10 box1.size = (1,1,1)
+20 box1.b1.image = "URL"   	  ' Image is loaded from a web address
+30 box1.draw                		  ' The cube is drawn with the texture on side b1
+Result: Only surface b1 receives the texture. 
+
+
+Example 3 – Background image (brick wall) 
+10 background.image="brickwall" 
+
+
+
+Tips
+Use image on the entire object for the same texture on all sides.
+Use image on a specific surface when different sides need different textures.
+Use the imagerotate attribute to rotate the image in the desired direction.
+
+
+
+`,
+            "point": `**point** - object
+
+Visual points
+The point object is used to create a visual marker – a small “dot” – in the 3D space.
+A point can use many of the same attributes as other objects in the language, such as move, color, linear, and more.
+
+One key difference is that the size of a point must be between 1 and 5.
+If you assign any value outside this range, the point will automatically default to size 2.
+
+Syntax 
+objectName.size = value    ' value 1–5
+
+
+Example 1 
+10 point1.size = 3                 ' A point with size 3
+20 point1.move = (5, 5, 5)         ' Moves the point to (5, 5, 5)
+30 point1.color = red              ' Sets the point’s color
+40 point1.draw
+
+
+Example 2 (gradient)  
+10 point1.size = 5  
+20 point1.move = (0, 5, 0)  
+30 point1.linear = red to gold     ' Applies a gradient to the point
+40 point1.draw
+
+
+Use cases
+Points can be useful for a variety of visual effects, including:
+-Marking specific coordinates in the 3D world
+-Creating star fields
+-Simulating distant stars or glowing particles
+-Debug markers for testing
+
+
+
+`,
+            "fontcolor": `**fontcolor** - attribute
+
+The fontcolor attribute is used to set the color of text for any object that can display text, such as text and window. The color can be specified either as a color name (e.g., red, blue, gold) or as a hex code (e.g., #ff0000).  
+
+syntax
+objectName.fontcolor = color
+
+objectName – the name of the object (e.g., text1, window1)
+color – a color name or a hex code
+
+
+Examples - Simple red text 
+10 text1.caption = "Hello world"
+20 text1.move = (0,5,0)
+30 text1.fontcolor = red     ' The text becomes red
+40 text1.font = Arial
+41 text1.fontsize = 24
+60 text1.draw
+
+
+Examples – yellow window with blue text  
+10 window1.size = (300,100,0)
+20 window1.color = gold
+30 window1.caption = "Hello world"
+40 window1.fontcolor = blue
+50 window1.draw
+
+
+Important to know
+You cannot change the color of text printed with print.
+Print text is always black, regardless of the fontcolor setting.
+
+
+
+`,
+            "fontsize": `**fontsize** - attribute
+
+The fontsize attribute controls the size of the text for objects capable of displaying text, such as window and button. In windows and buttons, the text size is measured in points (px).
+
+In the 3D world, the computer automatically converts the size into the metric system, meaning that a large pixel value results in large text within the 3D environment.
+
+Syntax:
+objectName.fontsize = size
+
+Example 1
+10 window1.size = (100,50,0)
+20 window1.caption = "Start"
+30 window1.fontsize = 18    ' The text becomes 18 px
+40 window1.fontcolor = white
+50 window1.draw
+
+
+Examples 2
+10 window1.size = (230,50,0)
+20 window1.caption = "CLICK HERE"
+30 window1.fontsize = 32    ' The button text becomes 32 px
+40 window1.fontcolor = black
+50 window1.button = true
+60 window1.draw
+
+
+
+`,
+            "then": `**then** - instruction
+
+Description
+THEN is used together with the IF instruction to control program flow.
+When an IF condition is true, THEN triggers the instruction that follows it.
+If the condition is false, everything after THEN on the same line is ignored.
+
+THEN is not a standalone instruction.
+It acts as a connector between a condition and the action that should be executed when that condition is met.
+
+
+Syntax 
+IF [condition] THEN [instruction]
+
+
+How THEN works
+1. The program evaluates the expression after IF.
+2. If the condition is true, the instruction after THEN is executed.
+3. If the condition is false, the rest of the line is skipped and the program continues on the next line.
+THEN is mainly used with:
+GOTO
+CALL
+Other simple flow-control instructions
+
+Example: IF varScore > 100 THEN GOTO 200
+
+
+Example 1 – Jump to a specific line 
+10 IF varScore > 100 THEN GOTO 200
+If varScore is greater than 100, the program jumps to line 200.
+If not, it simply continues on the next line. 
+
+Example 2 – Start a subroutine 
+10 IF varScore = 0 THEN CALL subENDGAME
+
+
+Example 3 – Buttons that control program flow 
+110 IF window1.click THEN CALL subYES
+120 IF window2.click THEN CALL subNO
+130 GOTO 110
+
+In this loop, the program checks whether any of the buttons was clicked.
+THEN ensures the subroutine is only called when the condition is true. 
+
+`,
+            "ripple": `**ripple** - attribute
+
+The ripple attribute adds a wave effect to an object, creating surface ripples similar to water waves or more bizarre, surreal distortions.
+You can control the amplitude, frequency, speed, duration, and loop behavior of the effect. 
+
+Syntax 
+objectName.ripple = (amplitude, frequency)
+objectName.ripple.speed = value
+objectName.ripple.time = duration
+objectName.ripple.loop = value  or  true/false
+
+Parameters:
+amplitude – height of the waves (e.g. 0.5)
+frequency – number of wave peaks per surface unit (e.g. 3)
+speed – how fast the waves move (e.g. 1.2)
+time – how long the effect lasts, including unit (e.g. 2 sec, 500 ms)
+loop – how many times the effect should repeat
+          A number = that many loops
+          true = infinite looping
+
+
+
+Exampel 
+10 sphere1.size=2
+20 sphere1.move=(0,3,0)
+30 sphere1.pattern="halftones"
+40 sphere1.ripple = (0.5, 3)
+50 sphere1.ripple.speed = 5
+60 sphere1.ripple.time = 2
+70 sphere1.ripple.loop = 5   ' runs the effect 5 times
+80 sphere1.draw
+
+
+Tips
+Mesh-based 3D objects such as sphere, torus, helix, and similar shapes are most affected by the ripple effect. These objects can produce dramatic, dynamic distortions that evolve over time.
+
+
+
+`,
+            "label": `**label** - prefix
+
+A label is used to mark a specific location in the code that the program can jump to using the goto instruction.
+
+In 3D Basic, a label is written as its own instruction, using the prefix label followed by the label’s name — without a colon or any additional characters.
+
+In 3D Basic, label belongs to the category of prefix words: language keywords that must always be followed by a name to be valid. Other members of this group include subName for subroutines and varName for variables.
+
+
+Syntax
+labelName
+
+Exampel 
+10 print "Start"
+20 goto labelPointB
+30 print "This will be skipped"
+labelPointB
+40 print "We are at point B"
+
+
+Tips
+The label prefix makes labels clear and easy to locate in the code.
+Use descriptive names after the prefix to make the program flow easier to understand.
+The label itself is not executed — it only marks a position in the code.
+
+
+
+`,
+            "moon": `**moon** - object
+
+A Phase-Controlled 3D Object 
+moon is a specialized 3D object in 3D Basic.
+Instead of using a traditional mesh lump, the moon is constructed from many polygons.
+This allows the object to render moon phases with high precision.
+
+Although this structure has some limitations, the moon object is fully compatible with the most common attributes in the language (such as color, move, pattern, animate). 
+
+syntax
+moonName.size = (x, y, z)
+
+x – Moon phase (0–10)
+Controls the horizontal shape of the moon.
+0 = very thin crescent
+5 = perfect half-moon (half circle)
+10 = “pregnant moon” (a very thick crescent)
+
+y – Height (meters)
+Sets the vertical size.
+
+z – Thickness (2D or 3D)
+Negative values → The moon is rendered as 2D
+Positive values → The moon is rendered as 3D, with the given thickness in meters
+
+
+EXAMPLE 1 – 3D Moon 
+A beautiful crescent moon with a pattern and color adjustment: 
+10 moon1.size = (3,3,1)             ' beautiful crescent
+20 moon1.pattern = "sunburst"       ' apply the “sunburst” pattern
+30 moon1.pattern.hue = 170          ' adjust the hue of the pattern
+40 moon1.move = (0,3.5,0)           ' move the moon 3.5 meters above ground level
+
+
+EXAMPLE 2 – 2D Yellow Moon With Black Edges, Rotating 5 Times 
+10 moon1.size = (3,3,-1)            	' 2D moon
+20 moon1.edge = true               		 ' draw a black outline
+30 moon1.color = yellow           	  ' fill color
+40 moon1.move = (0,3.5,0)        	   ' place above the ground
+50 moon1.animate.rotate = (0,0,0) to (0,360,0)
+60 moon1.animate.loop = 5          		 ' repeat rotation 5 times
+70 moon1.draw
+
+
+
+`,
+            "render": `**render** - instruction
+
+The render instruction is used in 3D Basic to draw the entire scene in the view window. When render is executed, all objects that have been assigned attributes — such as color, position, size, or a sound file — are automatically activated, even if methods like .draw or .play have not been called on them.
+
+render is especially useful when you want multiple objects to be drawn simultaneously or when several sound files need to start at exactly the same moment. It essentially functions as a global scene update.
+If you have already called .draw and .play on all relevant objects manually, you do not need to use render.
+
+Syntax
+render
+
+
+Exampel 
+10 box1.color = red  
+20 box1.size = (1,1,1)
+30 text1.caption = "Hello"
+40 sound1.musicfile = "pling.wav"
+50 render          				              ' Draws the scene and plays the sound
+
+
+`,
+            "type": `**type** - attribute
+
+The type attribute selects a variant, behavior, or shape of an object.
+Its meaning depends entirely on which object or effect it is used with.
+There is no global meaning of type. Valid values and behavior differ between objects.
+
+
+type for STARS
+Controls how the stars move.
+Types:
+still – static star field
+rnd – random movement
+up / down / left / right – scrolling movement
+radial – stars radiate from the center (warp speed effect)
+
+example
+particle1.stars.type = radial
+
+
+
+type for FIREWORKS
+Controls the explosion pattern.
+Types:
+palm
+pistil
+chrysanthemum
+comet
+
+example
+particle1.fireworks.type = pistil
+
+
+
+type for WINDOW
+Controls the window shape.
+Shapes:
+round
+speech
+thought
+burst
+
+example
+window1.type = speech
+
+
+
+Summary 
+Object                                  What type controls
+stars                                   movement pattern
+fireworks                               explosion shape
+window                                  visual shape
+
+`,
+            "trianglesynth": `**trianglesynth** - attribute
+
+The trianglesynth attribute generates a soft yet clear sound based on a triangle wave. The tone is cleaner than a sawtooth wave and more defined than a sine wave—almost with a flute-like quality. Ideal for gentle melodies, basslines, and atmospheric tones with clarity. 
+
+Syntax:
+soundName.trianglesynth = value
+
+Exampel 
+10 sound1.trianglesynth = 70
+20 sound1.notes = "a c e a d e c d"
+30 sound1.volume = 80        ' volume 80%
+40 sound1.play
+
+
+
+`,
+            "trail": `**trail** - attribute
+
+The trail attribute creates a visual trail behind an animated object. The trail can be used to draw paths, create motion effects, or build structures such as mazes.
+You can control the size, color, density, lifetime, and pattern of the trail.
+The trail is rendered along the object’s animation path.
+
+Basic Syntax 
+objectName.trail.size      = (x,y,z)
+objectName.trail.color     = color / #hex
+objectName.trail.time      = time in seconds
+objectName.trail.interval = trail density
+
+
+Explanation 
+
+Attribute                               Description
+trail.size                              Size of each trail segment
+trail.color                             Trail color (e.g. red or #00AACC)
+trail.time                              How long the trail remains visible
+trail.interval                          How frequently trail segments are drawn
+
+
+
+Example 1 – Trail stays permanently 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=red
+40 box1.animate=(0,1,0) to (5,1,0) to (5,1,5) to (-5,1,5)
+50 box1.trail.size=(1,1,1)    ' flat trail on the ground
+60 box1.trail.color=blue     ' blue trail
+80 box1.draw
+Since trail.time is not specified, the trail remains permanently. 
+
+
+Example 2 – Trail fades out after animation 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=red
+40 box1.animate=(0,1,0) to (5,1,0) to (5,1,5) to (-5,1,5)
+50 box1.trail.size=(1,1,1)
+60 box1.trail.color=blue
+70 box1.trail.time = 0.3     ' trail disappears after 0.3 seconds
+80 box1.draw
+Creates a tail effect where the trail fades away after movement. 
+
+
+
+
+All Valid trail Attributes 
+trail.size
+trail.interval
+trail.time
+trail.color
+trail.linear
+trail.diamond
+trail.radial
+trail.conical
+trail.pattern
+trail.hue
+trail.saturation
+trail.brightness
+trail.contrast
+trail.image
+trail.imagerotate
+
+
+Example – Drawing a Simple Maze Using trail 
+10 sphere1.size=0.2
+20 sphere1.visible=false
+30 sphere1.animate=(-5,1,5) to (-5,1,-5) to (5,1,-5) to (5,1,5) to (-2,1,5) to (-2,1,2) to (-2,1,-2) to (1,1,-2) to (1,1,0)
+40 sphere1.trail.size=(1,3,0.5)
+50 sphere1.trail.pattern="bricks"
+60 sphere1.trail.interval=10
+70 sphere1.draw
+The object is invisible but leaves behind a brick-pattern trail forming a maze.  
+
+
+
+`,
+            "faces": `**faces** - attribute
+
+
+In 3D Basic, every object automatically receives unique names for its faces in the background, such as b1, b2, b3, etc. These names are used to identify and control individual faces of an object.
+
+Different objects have different numbers of faces:
+-A sphere have 1 face
+-A box has 6 faces
+-Other objects may have more or fewer depending on their shape
+
+With the faces attribute, you can choose to show or hide these face names directly in the 3D view. This is a purely visual tool that helps you see which physical face corresponds to which name while programming.
+
+Important Notes
+-The face names do not have to be visible for you to assign attributes to a face in the code.
+-The faces attribute affects only the visual display, not the behavior of the object.
+-When your program is finished, you can set - objectName.faces = False  or remove the line completely – the program will work exactly the same. 
+
+
+Syntax 
+objectName.faces = True    ' Show face names on the object
+objectName.faces = False   ' Hide face names
+
+
+Example 
+10 box1.size = (2,2,2)
+20 box1.move = (0,1,0)
+30 box1.faces = True        ' Shows face names on box1 in the 3D view
+40 box1.b1.color = Red     ' Changes the color of face b1 on box1
+50 box1.draw
+
+
+In this example, the face names on box1 are displayed so you can easily see which face is b1 before changing its color. 
+
+
+`,
+            "squaresynth": `**squaresynth** - attribute
+
+The squaresynth attribute produces a sharp, distinctive sound based on a square wave. It’s perfect for retro-style games, leads, and synth basses with a clear character.
+The value is given in percent (0–100), where 100% is a pure square wave.  
+
+Syntax: 
+soundName.squaresynth = value
+
+Exampel:
+10 sound1.squaresynth = 100
+30 sound1.notes = "c c g g a a g"
+40 sound1.play
+
+
+`,
+            "shape": `**shape** - object
+
+– composite figures 
+In 3D Basic, Shape objects are used to work with predefined figures that are built from multiple primitive 3D objects.
+This makes it possible to quickly use more advanced shapes, such as letters and certain special symbols, without having to build them from scratch. 
+
+----What is a Shape?
+Shape figures are predefined composite shapes
+They are built from several 3D primitives
+All letters in the alphabet (A–Z) are available as Shape figures
+The letters are real 3D forms and are well suited for 3D text
+
+---Limitations
+Because Shape figures are composed of multiple objects, the following limitations apply:
+The 3D Basic surface system cannot be used
+It is not possible to color individual surfaces
+Color and material settings apply to the entire figure
+
+---Apart from this, Shape objects behave like regular 3D objects:
+they can be moved
+scaled
+rotated
+animated
+
+
+---Important naming rules
+All Shape figures always start with a capital letter.
+✔ Valid:
+LetterA
+LetterM
+Cross
+✘ Invalid:
+letterA
+lettera
+
+This design choice helps to:
+clearly distinguish Shape figures from regular 3D objects
+avoid confusion about which properties are available
+(Shape objects lack some features that other 3D objects have)
+
+
+Syntax 
+shapeName.ShapeType.size = value
+
+- shapeName – The name of the object
+- shapetype – The name of the Shape figure, for example LetterA, LetterM, or Cross 
+- size – The size of the figure 
+
+Example – draw a red A in 3D 
+10 shape1.LetterA.size = 2
+20 shape1.move = (0,1,0)
+30 shape1.color = red
+40 shape1.draw
+
+
+----Available Shape figures
+Letters
+All letters from A to Z are available and follow the same naming pattern:
+LetterA
+LetterB
+LetterC
+…
+LetterZ
+
+----Special symbols
+At the moment, the following special shapes are available:
+Cross
+Plus
+Cloud
+(The Shape library will be expanded over time.)
+
+
+Example – draw a cross with wood material  
+10 shape1.Cross.size = 2
+20 shape1.move = (0,1,0)
+30 shape1.wood = 100
+40 shape1.draw
+
+
+
+Animating Shape figures
+Shape objects can be animated in the same way as other 3D objects.
+
+Example – an orange M moving between two points
+shape1.LetterM.size = 2
+shape1.color = orange
+shape1.animate = (0,1,0) to (5,1,0)
+shape1.draw
+
+
+
+`,
+            "sinesynth": `**sinesynth** - attribute
+
+The sinesynth attribute produces a soft, clean, and rounded sound based on a sine wave. It’s suitable for basslines, gentle melodies, and atmospheric tones.
+The value is given in percent (0–100), where 100% is a pure sine wave and 0% is off. 
+
+Syntax: 
+soundName.sinesynth = value   ' Värde i procent (0–100) 
+ 
+Exampel: 
+10 sound1.sinesynth = 80
+20 sound1.notes = "c c g c c d e c c d g"
+30 sound1.play
+
+
+`,
+            "visible": `**visible** - attribute
+
+The visible attribute lets you control whether an object is shown or hidden in the 3D scene.
+This is useful when you want to temporarily hide objects, create reveal effects, or build more advanced animations.
+
+The visible attribute can be set to either true (visible) or false (hidden).
+
+Syntax 
+objectName.visible = true/false
+
+
+Example 1 – Making a box invisible
+In this example, a box is created and positioned in the scene, but it is hidden by setting visible to false.
+10 box1.size = (2,2,2)
+20 box1.move = (0,1,0)
+30 box1.visible = false
+40 box1.draw
+
+
+Example 2 – Hiding a single side of a box
+You can also control the visibility of individual sides of an object.
+In this example, side b1 of the box is hidden while the rest of the box remains visible.
+10 box1.size = (2,2,2)
+20 box1.move = (0,1,0)
+30 box1.b1.visible = false
+40 box1.draw
+
+
+`,
+            "sawtoothsynth": `**sawtoothsynth** - attribute
+
+The sawtoothsynth attribute produces a powerful, rich sound based on a sawtooth waveform. It’s commonly used for pads, strings, and brass-like synth tones. 
+
+Syntax: 
+soundName.sawtoothsynth = value
+
+Exampel:
+10 sound1.sawtoothsynth = 60
+20 sound1.squaresynth = 40      ' Mixes in 40% square for extra bite
+30 sound1.notes = "f3 a3 c8 f8 c d o2d d c e f"
+40 sound1.play
+
+
+`,
+            "sphere": `**sphere** - object
+
+The Sphere object is used to create balls, spheres, planets, and other round 3D objects in 3D Basic. It consists of a single mesh and works together with most attributes in the language, such as color, materials, patterns, animation, and child objects. 
+
+Sphere is especially useful for creating smooth, organic shapes or realistic objects like glass spheres, bubbles, and celestial bodies. 
+
+Syntax 
+sphereName.size = radius
+size defines the radius of the sphere in the 3D world.  
+
+
+
+Example 1 – Creating a blue glass sphere
+This example creates a transparent glass-like sphere with light reflection.
+10 sphere1.size = 2
+20 sphere1.move = (0,3,0)
+30 sphere1.color = skyblue
+40 sphere1.glass = 100
+50 sphere1.draw
+
+Explanation:
+size defines the size of the sphere.
+move positions the object in the scene.
+color sets the base color.
+glass gives the object a glass-like appearance.
+Unlike simple transparency, glass also adds reflective properties, creating more realistic light behavior.
+draw renders the object.
+
+
+
+
+
+
+Example 2 – A bouncing ball on a wooden floor
+In this example, a floor is created first, followed by a ball that bounces using animated motion.
+10 boxFloor.size = (20,0.1,20)
+20 boxFloor.image = "woodfloor"
+30 boxFloor.draw
+
+40 sphere1.size = 0.5
+50 sphere1.move = (5,8,5)
+60 sphere1.color = princeton
+70 sphere1.draw
+
+80 sphere1.bow.angle = 70  
+90 sphere1.animate.bow = (5,8,5) to (4,0.7,4)
+100 sphere1.animate.time = 0.6
+
+110 sphere1.bow.angle = 60
+120 sphere1.animate.bow = (4,0.7,4) to (3,4,3) to (2,0.7,2) to (1,2,1) to (0,0.7,0) to (-1,1,-1) to (-1.5,0.7,-1.5)
+130 sphere1.animate.time = 1
+
+140 sphere1.draw
+150 sphere1.animate = (-1.5,0.7,-1.5) to (-6,0.7,-8)
+160 sphere1.draw
+
+Explanation:
+The floor is created using a thin box with a wood texture.
+The ball moves through several positions to simulate bouncing.
+bow.angle adds a curved motion path for more natural movement.
+Multiple animation steps can be chained to create complex motion.
+
+
+
+
+
+Example 3 – Sphere with children and patterns
+This example demonstrates how to create a sphere that contains multiple child objects.
+10 sphere1.size = 1
+20 sphere1.move = (0,1,0)
+30 sphere1.pattern = "triangle"
+40 sphere1.draw
+
+50 sphere1.children = 5
+60 sphere1.children.move = (-6,0,3)
+70 sphere1.children.spacing = (3,0,0)
+80 sphere1.child1.pattern = "stripes"
+90 sphere1.draw
+
+
+Explanation:
+children creates multiple copies of the object.
+children.move defines the starting position of the children.
+children.spacing controls the distance between them.
+Each child can have its own attributes, such as individual patterns.
+
+
+
+
+
+Summary
+The Sphere object is one of the most versatile objects in 3D Basic.
+It is ideal for:
+-spheres, balls, and planets
+-glass and crystal objects
+-animated motion and bouncing effects
+-grouped or repeated objects using children
+
+
+
+`,
+            "transform": `**transform** - object
+
+The transform object is used to create and manipulate polyhedral 3D shapes.
+It works together with most other attributes in the language, such as color, materials, animation, transparency, and deformation.
+
+With transform, you can create everything from simple geometric solids to complex, organic shapes like rocks, crystals, and trees.
+
+
+Basic Syntax 
+transformName.size = (x, y, z)
+transformName.type = value / name
+
+-size – defines the object’s dimensions along the x, y, and z axes
+-type – defines the shape of the object
+    can be given as a number (number of sides)
+    or as a shape name
+The default value for type is 6, which creates a cube.
+
+
+
+Example 1 – Creating a 12-sided object 
+10 transform1.size = (5,5,5)
+20 transform1.type = 12
+30 transform1.pattern = "matrix"
+40 transform1.move = (0,5,0)
+50 transform1.draw
+This creates a 12-sided object with a matrix pattern. 
+
+
+Example 2 – Octahedron 
+10 transform1.size = (4,3,4)
+20 transform1.type = octahedron
+30 transform1.color = orange
+40 transform1.move = (0,5,0)
+50 transform1.draw
+Here, the shape is defined using a named type instead of a numeric value. 
+
+
+
+
+Valid Shape Types 
+You can define the shape either by number of sides or by name:
+
+Sides                               Name
+6                                   Hexahedron
+7                                   Heptahedron
+8                                   Octahedron
+9                                   Nonahedron
+10                                  Decahedron
+11                                  Hendecahedron
+12                                  Dodecahedron
+13                                  Tridecahedron
+14                                  Tetradecahedron
+15                                  Pentadecahedron
+16                                  Hexadecahedron
+17                                  Heptadecahedron
+18                                  Octadecahedron
+19                                  Enneadecahedron
+20                                  Icosahedron
+
+
+Notes
+-Valid values range from 3 to 100.
+-Values such as 8, 12, and 20 produce clean, symmetrical shapes.
+-Higher values (around 21–100) create more organic forms with gaps between polygons.
+These are well suited for foliage, bushes, and other natural objects.
+-Invalid values (negative numbers, zero, or extreme values) default to a cube.
+
+
+
+Deforming Objects
+You can deform the entire object using the deform attribute:
+
+Syntax
+transformName.deform = (x, y, z)
+
+
+Example – Rock-like object 
+10 transform1.size = (2,2,2)
+20 transform1.type = 12
+30 transform1.image = "rust"
+40 transform1.move = (0,5,0)
+50 transform1.deform = (1,0,0.5)
+60 transform1.draw
+This creates an irregular, stone-like shape with a rusty surface.  
+
+
+Surface Groups (tf1, tf2, tf3 …)
+Each face group of a transform object can be styled individually.
+
+
+Example: Green Crystal
+10 transform1.size = (2,5,2)
+20 transform1.type = 20
+30 transform1.color = green
+40 transform1.move = (0,5,0)
+50 transform1.transparent = 30
+60 transform1.tf1.color = gold
+70 transform1.tf8.color = lime
+80 transform1.tf2.color = emerald
+90 transform1.draw
+This technique is useful for gems, crystals, and decorative objects. 
+
+
+Example: Simple Tree 
+10 transform1.size = (3,2,3)
+20 transform1.type = 20
+30 transform1.linear = green to lime
+40 transform1.move = (0,5,0)
+50 transform1.draw
+60 cylinder1.size = (0.5,4.5)
+70 cylinder1.color = brown
+80 cylinder1.move = (0,2,0)
+90 cylinder1.draw
+
+
+Example: More Realistic Tree 
+10 transform1.size = (3,2,3)
+20 transform1.type = 100
+30 transform1.transparent = 50
+40 transform1.color = green
+50 transform1.move = (0,5,0)
+60 transform1.draw
+70 cylinder1.size = (0.5,4.5)
+80 cylinder1.color = brown
+90 cylinder1.move = (0,2,0)
+100 cylinder1.draw
+110 transform2.size = (2.8,1.8,2.8)
+120 transform2.type = 80
+130 transform2.radial = green to emerald to lime
+140 transform2.move = (0,5,0)
+150 transform2.draw
+
+
+Tip
+Combining the transform object with the tree object allows you to create very detailed vegetation. Keep in mind that complex geometry can be demanding on the graphics card, especially when used in large quantities.
+
+
+`,
+            "hill": `**hill** - object
+
+The hill object lets you create hills, mountains, valleys, and pits in 3D Basic.
+It works just like other 3D objects in the language — you can change its color, apply images or materials, animate it, and much more. 
+
+Syntax 
+hillName.size = (x, y, z)
+
+
+Example 1 – Simple hill 
+10 hill1.size = (10, 2, 10)     ' creates a smooth hill, 2 meters high
+20 hill1.move = (0, 0.1, 0)
+30 hill1.color = green
+40 hill1.draw
+
+
+Example 2 – Valley 
+10 hill1.size = (10, -2, 10)    ' creates a valley
+20 hill1.move = (12, 0.1, 0)
+30 hill1.color = brown
+40 hill1.draw
+
+
+Parameter explanation
+x and z define how large an area the hill or valley covers.
+y defines the height:
+A positive value creates a hill or mountain.
+A negative value creates a pit or valley.
+A large area with low height results in a smooth, gentle hill.
+A small area with high height creates a steep mountain.
+
+
+Important notes
+If you create multiple hills or mountains that overlap — especially with different colors or textures — the rendering may look incorrect at the intersection points.
+To avoid this, move the objects slightly apart until the result looks as intended.
+
+Note
+The previous landscape object has been removed and replaced by hill.
+This approach allows you to create individual hills that can be placed freely in the wo
+
+
+`,
+            "calc.distance": `**calc.distance** - math
+
+The calc.distance function calculates the distance between two points in 3D space. It is useful for gameplay logic, camera control, movement, collision checks, and much more. 
+
+syntax
+calc.distance(x1, y1, z1) to (x2, y2, z2) = varLength
+-(x1, y1, z1) – coordinates of point A
+-(x2, y2, z2) – coordinates of point B
+-varLength – the variable where the distance is stored
+All variable names must start with the prefix var.
+
+
+Point variables (tuple) 
+calc.distance(varPoint1) to (varPoint2) = varLength
+-varPoint1 / varPoint2 – variables containing 3D points in the form (x, y, z)
+-varLength – variable where the result is saved
+
+
+
+Calculation
+calc.distance automatically calculates the distance between two 3D points using the formula: 
+dx = x2 - x1
+dy = y2 - y1
+dz = z2 - z1
+varLength = sqrt(dx^2 + dy^2 + dz^2)
+You never need to perform this manually — the function handles everything. '
+
+
+example – Using separate coordinates    
+10 varX1 = 9
+20 varY1 = 0
+30 varZ1 = 0
+40 varX2 = 2
+50 varY2 = 0
+60 varZ2 = 0
+70 calc.distance(varX1, varY1, varZ1) to (varX2, varY2, varZ2) = varDist
+80 print "The distance is: " + varDist + " meters."
+Result: 7 meter 
+
+
+example– Using point variables  
+10 varStart = (5, 5, 0)
+20 varGoal = (10, 8, 0)
+30 calc.distance(varStart) to (varGoal) = varDist
+40 print "The distance between varStart and varGoal is: " + varDist
+
+
+
+Additional examples 
+Example 1 – fixed values 
+calc.distance(5, 2, 0) to (9, 5, 0) = varDist
+
+Example 2 – mixed coordinates  
+calc.distance(varX, 2, 0) to (9, 5, varZ) = varDist
+
+
+WHEN TO USE calc.distance
+Check how close two objects are (e.g., player vs enemy)
+Move objects toward each other
+Adjust camera angle or zoom based on distance
+Calculate distance between any 3D points in the world
+
+
+TIPS
+Always use variables starting with var.
+Coordinates may be numbers, variables, or a mix of both.
+
+
+`,
+            "say": `**say** - instruction
+
+SAY is an instruction in 3D Basic that uses the computer’s built-in text-to-speech engine to read text out loud.
+
+This instruction is useful when you want to:
+-provide spoken information to the user
+-create games or programs that “talk”
+-add a spoken intro to a song, scene, or music sequence
+The text-to-speech engine is set to English by default, which means English phrases sound the most natural.
+
+SAY works independently and does not require render or draw.
+You can think of SAY as a spoken version of print — instead of showing text on the screen, the text is read aloud.
+
+Syntax 
+say = "text"
+
+Example 
+10 say = "Hello World"    ' the computer says "Hello World"
+
+
+Language Support
+With SAY, you can choose which language the text-to-speech engine should use.
+If no language is specified, English (default) is always used.
+Currently supported languages:
+English
+Spanish
+German
+Swedish
+
+If the speech does not work as expected, try running 3D Basic in a different web browser, since available voices may vary between browsers and operating systems.
+
+
+Syntax (language selection) 
+say.language = "text"
+
+Examples 
+10 say.swedish = "Jag heter Peter och jag gillar gult och svart!"
+20 say.spanish = "¡Hola! Me llamo Peter y me gusta el amarillo y el negro."
+30 say.german  = "Hallo! Mein Name ist Peter och jag mag Gelb och Schwarz."
+40 say = "This is in English by default."
+
+
+Text + Variables  
+Text that is spoken with SAY can be combined with variables using the + operator.
+This makes it possible to create dynamic and personalized voice messages. 
+
+Syntax 
+say = "text" + variable
+
+
+Exempel 
+10 varName = "Peter"
+20 say = "Hello, my name is " + varName
+
+In the example above, the computer will say:
+“Hello, my name is Peter” 
+
+
+`,
+            "rem": `**rem** - instruction
+
+The REM instruction is a classic old-school command derived from the word remark. It is used to insert comments into your code. Comments are useful when you want to explain what a certain section of code does or leave notes for yourself or other developers.
+
+In larger projects, the text you place after REM can serve as searchable keywords, making it easier to quickly locate the right part of the code among thousands of lines.
+
+Everything written after REM is ignored by the computer. It is never executed and exists solely for you as the programmer.
+
+In 3D Basic, there are two ways to write comments:
+
+Syntax
+rem Comment
+' Comment
+
+Exampel 
+10 rem This is a comment
+20 ' This is a comment
+
+
+`,
+            "speed": `**speed** - attribute
+
+In 3D Basic, the attribute speed is used to control how fast something happens — such as movement, rotation, shaking, or visual effects. To keep the language simple and consistent, most time-related behavior in 3D Basic is handled using just two attributes: speed and time. 
+
+Because of this design choice, you will rarely see terms like duration. Instead, speed defines how fast something happens, while time defines how long it lasts. 
+
+
+Common Uses of speed 
+The speed attribute appears in many different parts of 3D Basic. Below are some common 
+examples: 
+particleName.snow.speed = value          ' How fast the snow falls
+particleName.confetti.speed = value     ' Falling speed of confetti
+player1.speed = 0.08                   	   ' How fast a player moves in FPS mode
+camera1.rotate.speed = number               ' How fast the camera rotates
+spotlight1.blink.speed = 50          	  ' How fast a light source blinks
+objectName.ripple.speed = value       	 ' Speed of a ripple effect
+objectName.shake.speed = value          ' How fast an object shakes
+
+
+
+Example – Shaking Cube 
+In the following example, an orange cube shakes for 2 seconds with a speed of 10: 
+10 box1.size = (4,4,4)
+20 box1.shake = (0.05, 0, 0)
+30 box1.move = (0,2,0)
+40 box1.shake.speed = 10
+50 box1.shake.time = 2
+60 box1.color = flame
+70 box1.draw
+
+In this case:
+-shake.speed controls how fast the shaking occurs.
+-shake.time defines how long the shaking lasts.
+
+
+
+Important to Remember
+It’s important not to confuse speed and time.
+They serve different purposes and cannot be used interchangeably:
+-speed → how fast something happens
+-time → how long it happens
+In some situations, both attributes are used together, while in others only one of them is required.
+
+
+
+`,
+            "pulsesynth and pulsewidth": `**pulsesynth and pulsewidth** - attribute
+
+pulsesynth
+The pulsesynth attribute generates a pulse wave whose sound character depends on the pulse width. It can range from full and rich to very thin, depending on the settings. Pulse waves are useful for sound effects and unique melodic tones. 
+
+Syntax:
+soundName.pulsesynth = value
+
+Example – closed sound (narrow pulse width) 
+10 sound1.pulsesynth = 100
+20 sound1.notes = "c d f g a e"
+30 sound1.play
+
+
+
+pulsewidth
+pulsewidth is a special attribute used together with pulsesynth to control the pulse wave's width. The default value is 0.1, which gives pulsesynth its characteristic “closed” sound.
+To achieve a more open and fuller tone, increase the value—for example 0.25: 
+
+Syntax:
+soundName.pulsewidth = value
+
+Example – more open sound 
+10 sound1.pulsesynth = 100
+20 sound1.notes = "c d f g a e"
+30 sound1.pulsewidth = 0.25
+40 sound1.play
+
+
+`,
+            "step": `**step** - instruction
+
+STEP is used together with the FOR loop to define how much the counter variable changes on each iteration.
+If STEP is not specified, the variable will increase by 1 by default. 
+
+Syntax 
+for variable = startValue to endValue step value
+
+Description
+The STEP keyword allows you to control how large the increment is for each loop cycle.
+This is useful when you want to skip values, create larger steps, or control how quickly something changes over time.
+
+
+Example 1 
+10 for varI = 1 to 10 step 2
+20 box1.size = (varI, varI, varI)
+30 box1.draw
+40 next varI
+In this example, varI increases by 2 on each loop iteration.
+This causes box1 to grow in larger steps instead of changing by 1 each time. 
+
+
+Example 2  
+10 for varI = 1 to 100 step 5
+20 print varI
+30 next varI
+Here, the values 1, 6, 11, 16, and so on are printed, since the counter increases by 5 each time. 
+
+
+Important Note
+All variables in 3D Basic must begin with the prefix var in order to be valid.
+
+
+`,
+            "noicesynth": `**noicesynth** - attribute
+
+The noicesynth attribute generates noise. It’s useful for drums, wind, explosions, and other sound effects. 
+
+Syntax: 
+soundName.noicesynth = value
+
+Exampel:
+10 sound1.sinesynth = 80
+20 sound1.noicesynth = 20       ' Adds a bit of noise for a more natural sound
+30 sound1.notes = "c4 e4 g4 c5"
+40 sound1.play
+
+
+`,
+            "water": `**water** - attribute
+
+The water attribute gives an object a realistic sense of color variation, depth, and shimmer, similar to what you see in large bodies of water such as lakes, pools, or oceans.
+Unlike simply using transparency, the water attribute adds a more dynamic and natural-looking surface effect. 
+
+It is commonly used together with color, transparency, and lighting to create convincing water surfaces in 3D scenes. 
+
+Syntax 
+objectName.water = value
+
+value is given as a percentage (0–100):
+0 = no water effect
+100 = full water effect with maximum depth and shimmer
+
+Example – Creating a realistic swimming pool  
+10 box1.size = (5,2,5)
+20 box1.move = (0,1,0)
+30 box1.color = skyblue
+40 box1.water = 100
+50 box1.transparent = 15
+60 box1.draw
+
+In this example, a box is used to represent a pool of water.
+By combining the water attribute with a low transparency value and a light blue color, the object gains a convincing water-like appearance. 
+
+
+`,
+            "sub": `**sub** - prefix
+
+The sub prefix is used to create subroutines — reusable blocks of code that can be executed from different parts of the program. Subroutines help make code more organized, cleaner, and easier to maintain.
+
+A subroutine begins with a name (e.g., subJump, subLAND, subHero) and ends with endsub.
+
+Between these lines, you place the instructions that the subroutine will perform.
+In 3D Basic, sub (and therefore subName) is part of the group of prefix words: keywords that must always be followed by a name to be valid.
+
+
+Syntax
+subName
+   <instructions>
+endsub
+
+Calling a subroutine
+To run a subroutine, use the instruction:
+
+Exampel 
+10 subHero
+20    player1.move = (0, 2, 0)   ' Moves the player upward
+30    player1.draw
+40 endsub
+
+Main program 
+50 call subHero   ' Executes the subroutine
+
+In this example, the subroutine subHero moves the player upward and redraws it. Later in the program, you can call the subroutine using call subHero whenever that behavior is needed.
+
+Important to know
+In some programming languages, it is possible to pass values directly when calling a subroutine, such as call subName(value).
+
+
+This is not allowed in 3D Basic.
+Variables in 3D Basic are global unless explicitly declared local.
+Therefore, all variables automatically follow into the subroutine without being specified in the call.
+
+
+Tips
+The label prefix makes labels clear and easy to locate in the code.
+Use descriptive names after the prefix to make the program flow easier to understand.
+The label itself is not executed — it only marks a position in the code.
+
+
+`,
+            "goto": `**goto** - prefix
+
+The goto instruction is used to change the program flow by jumping directly to a specific place in the code.
+The jump is made either to a specific line number or to a label written with the prefix label followed by the label’s name. 
+
+Syntax:
+goto lineNumber
+goto labelName
+
+Example 1 – Jump to a line number:  
+10 print "Start"
+20 goto 40
+30 print "This will never be executed"
+40 print "We jumped here"
+
+
+Example 2 – Jump to a label with prefix: 
+10 print "Start"
+20 goto labelPointA
+30 print "This will not run"
+labelPointA
+40 print "We are at point A"
+
+
+Tips:
+Use labels with the label prefix to make the code more readable and avoid relying on line numbers.
+Be careful not to create infinite loops—combine with conditions (if/then) to control when the jump occurs.
+If you accidentally create an infinite loop using goto, it’s easy to break it by pressing the stop button.
+
+
+`,
+            "move": `**move** - attribute
+
+The move attribute is used to place an object at a specific position in the 3D world.
+Coordinates are given in meters.
+x – the object's horizontal position (left–right)
+y – the object's vertical position (up–down)
+z – the object's depth position (forward–backward)
+
+Syntax
+objectName.move = (x, y, z)
+
+Example 1 – place a box at position (10, 5, -3): 
+10 box1.move = (10, 5, -3)
+
+Example 2 – move a text object: 
+10 text1.caption = "Hello"
+20 text1.move = (5, 3, 0)
+30 text1.draw
+
+Tips
+move replaces the object's current position.
+All objects can be positioned with move, including 2D objects such as window.
+move can be combined with rotate and size to achieve precise placement and shape.
+You can create simple animations by updating the position using move, but it may appear choppy. For smoother motion, the built-in animation attributes in 3D Basic are recommended.
+
+
+
+
+`,
+            "spacing": `**spacing** - attribute
+
+The spacing attribute is used to create a distance between child objects when using CHILDREN.
+Without spacing, all child objects are placed in exactly the same position as the parent, so they will overlap.
+
+Spacing defines how far apart the children are drawn along the X, Y, and Z axes.
+The distance is always measured from the center of each child object, not from the outer edge — which is important for precise placement. 
+
+Syntax
+objectName.children.spacing = (x, y, z)
+
+Units
+All values are specified in meters, just like other position and size attributes in 3D Basic
+
+Example 
+10 box1.size = (2,2,2)
+20 box1.color = blue
+30 box1.children = 4
+40 box1.children.move = (0,1,5)
+50 box1.children.spacing = (0,0,3)
+60 box1.draw
+
+In this example, five blue boxes are created. Four are placed in a row with 3 meters between them along the Z-axis. The parent box is also drawn, but since it does not have its own move value, it remains at the origin (0,0,0). 
+
+Tips: 
+If you write box1.visible = false, all children will also become invisible.
+To have exactly four boxes visible, it’s better to create three children instead of hiding the parent. 
+
+
+
+`,
+            "blink": `**blink** - attribute
+
+The blink attribute controls a simple visible/invisible blinking effect for light objects in 3D Basic.
+Blink can be used with the following objects: sun, ambient, spotlight, and pinlight.
+The light is switched off and on at the tempo you specify.
+
+Syntax:
+objectName.blink = <duration>  
+objectName.blink.speed = <tempo 0-100%>
+
+
+<duration> specifies how long each blinking cycle lasts, e.g. 3 sec.
+<tempo> sets the blinking speed as a percentage (0–100%).
+0% = no blinking, normal lighting.
+100% = extremely fast blinking, almost imperceptible.
+
+Exempel:
+10 spotlight1.visible = true
+20 spotlight1.blink = 3 sec        ' blinks for 3 seconds
+30 spotlight1.blink.speed = 50     ' blinking speed
+
+
+When blinking ends, the light returns to the state it had before blinking was activated.
+
+
+
+`,
+            "print": `**print** - instruction
+
+(Print text and variables)
+The classic PRINT instruction also exists in 3D Basic, but it’s mainly used for quickly checking text strings, variables, and other text-based content.
+It’s meant for testing and debugging, not for creating stylish 3D letters or colorful windows.
+
+When you use PRINT, a small text window automatically opens at the bottom of the view window. The lines printed with the PRINT command appear there.
+Note: You cannot change the appearance of the PRINT window (colors, fonts, background, etc.). If you want to create styled text or windows, use the WINDOW or TEXT objects instead.
+If you remove all PRINT lines from your program, the window disappears the next time the program runs. You can also manually close and clear the print window using: clear(print)
+
+Syntax 
+print "Here is your text"             		 ' prints only text
+print "Your number is: " + varNUM      	 ' prints text and a variable
+print varNUM                          			 ' prints a variable
+               		 	
+Example  
+10 varDAY = "May 26"
+20 print "My birthday is on: " + varDAY
+
+
+
+`,
+            "edgesize": `**edgesize** - attribute
+
+The edgesize attribute controls the thickness of the outline when edge = true is enabled.
+The thickness is measured in pixels for window objects and in meters for 3D objects. 
+
+Syntax:
+objectName.edgesize = size
+
+
+Exampel 1:
+10 window1.size=(300,300,0)
+20 window1.caption = "Login"
+30 window1.fontcolor = blue
+40 window1.edge = true
+50 window1.edgecolor = rnd      ' Random edge color
+60 window1.edgesize = 5         ' The outline becomes 5 pixels thick
+70 window1.draw
+
+
+Tips:
+For window objects, edgesize is measured in pixels.
+Combine edgesize and edgecolor to create visually clear and well-defined UI elements. 
+
+
+
+`,
+            "edge": `**edge** - attribute
+
+The edge attribute controls whether an object displays edges/outlines and how these edges appear. It can only be applied to entire objects or to specific surfaces.
+
+Edges can be assigned color and thickness to highlight the object's shape, especially useful for flat objects or when working in a wireframe style. 
+
+Syntax:
+objectName.edge = true/false        ' Enables or disables edge display
+objectName.edgecolor = color        ' Sets the color of the edges
+objectName.edgesize = value         ' Sets the thickness of the edges
+
+Exampel 1:
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.edge = true         	' Enables edges on the entire box
+40 box1.edgecolor = black    	' Black edges
+50 box1.edgesize = 2         	' Edges are 2 units thick
+60 box1.draw
+
+Exampel 2:
+10 window1.size=(300,300,0)
+20 window1.input.edgecolor=red
+30 window1.input.edgesize=3
+40 window1.input.edge=true
+50 window1.input.color=gold
+60 window1.input="Write"+varNAME
+70 window1.draw
+
+
+Tips
+Edge color and thickness only apply if edge = true.
+To create a wireframe look, set objectName.transparent = 100%.
+
+
+
+
+`,
+            "edgecolor": `**edgecolor** - attribute
+
+The edgecolor attribute is used to set the color of the outline around text, windows, buttons, and other objects that support borders.
+
+This attribute only works when edge = true; otherwise, no outline will be visible.
+It can be used on both UI elements and 3D objects. 
+
+Syntax
+objectName.edgecolor = color
+
+Exampel 
+10 window1.size=(400,400,0)
+20 window1.caption = "Hallo  World"
+30 window1.fontcolor = red
+40 window1.edge = true              ' Creates a border around the window object
+41 window1.edgesize = 7             ' Border thickness
+50 window1.edgecolor = blue         ' Border becomes blue
+60 window1.draw
+
+
+Tips
+Combine edgecolor with fontcolor for clearer text against complex backgrounds.
+Works on text, window, button, and other UI elements.
+Also works on all 3D objects.
+
+
+
+
+`,
+            "prop": `**prop** - attribute
+
+The prop attribute is used to control the actual prop — the geometric shape that represents the light source (for example, the sphere for sun, the ball for pinlight, or the cone for spotlight).
+
+With prop, you can change size, color, visibility, or assign a texture — independently of the light itself.
+
+Syntax examples:
+sun1.prop.size = 10                       ' changes the size of the sun’s sphere
+pinlight1.prop.color = red             ' changes the color of the pinlight’s prop
+spotlight1.prop.visible = false      ' hides the spotlight’s cone, but the light still shines
+
+
+Note: All lights except Ambient have a default-sized prop that is used if nothing else is specified. 
+
+
+
+`,
+            "pattern": `**pattern** - attribute
+
+The pattern attribute applies built-in mathematical patterns to objects in 3D Basic. These patterns act like textures or wallpapers but are generated entirely by code. This means no image files are needed, and saved projects remain small and efficient.
+
+Unlike other color-related attributes, pattern coloring is controlled with hue, not color. You can also adjust brightness, contrast, and saturation specifically for the pattern.
+
+Built-in patterns
+Examples of available patterns:
+
+dots, stripes, mondrian, colorful, bricks, sunburst, klimt, bamboo, matrix, retro, cars, games, ghosts, isometric, triangle, moroccan, paperflower, herringbone, mosaic, city, hearts, halftones, zodiac, bats, islamic, flames, feathers, checkerboard, dice, ribbon, kex, crossedcircles
+
+
+
+Syntax
+objectName.pattern = "name"
+objectName.surfaceName.pattern = "name"
+objectName.hue = value          ' 0–360 – changes pattern color (pattern-only)
+objectName.brightness = value   ' 0–200 – default 100
+objectName.saturation = value   ' 0–200 – default 100
+objectName.contrast = value     ' 0–200 – default 100
+
+
+Example – object fully covered with ghost pattern 
+box1.size=(2,2,2)
+box1.move=(0,1,0)
+box1.pattern="ghosts"
+box1.draw
+
+
+Example – only side b1 uses Mondrian  
+box1.size=(2,2,2)
+box1.move=(0,1,0)
+box1.b1.pattern="mondrian"
+box1.draw
+
+
+Example – children with different patterns 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.pattern="checkerboard"
+40 box1.draw
+50 box1.children=8
+60 box1.children.move=(-10,0,5)
+70 box1.children.spacing=(3,0,0)
+80 box1.child1.pattern="halftones"
+90 box1.child1.hue=150
+100 box1.child3.pattern="flames"
+110 box1.child5.pattern="stripes"
+120 box1.child8.pattern="bricks"
+130 box1.child6.pattern="retro"
+140 box1.child6.move=(-10,0,0)
+150 box1.draw
+160 box1.animate.rotate=(0,0,0) to (0,1080,0)
+170 box1.animate.time=8
+180 box1.draw
+
+
+
+
+Built-in patterns
+List of available patterns:
+
+
+dots
+stripes
+mondrian
+colorful
+isometric
+triangle
+moroccan
+herringbone
+mosaic
+halftones
+islamic
+checkerboard
+crossedcircles
+matrix
+retro
+klimt
+kex
+ribbon
+lily
+swirls
+joy
+scales
+bricks
+sunburst
+paperflower
+hearts
+zodiac
+flames
+dice
+bamboo
+feathers
+bats
+cars
+games
+ghosts
+city
+cobblestones
+roadtype1
+roadtype2
+roadtype3
+roadtype4
+roadtype5
+
+`,
+            "caption": `**caption** - attribute
+
+The caption attribute is used to display text on objects such as text, button, window, and any object type capable of containing text. The only exception is the print window, where caption does not apply.
+
+Caption defines the visible text displayed on the object in the 3D view or in flat window panels.
+
+Syntax
+objectName.caption = "text content"
+
+
+Example 1 – Text object 
+10 text1.caption = "Welcome to 3D Basic"
+20 text1.fontcolor = red
+30 text1.move = (0, 5, -10)
+40 text1.draw
+
+Example 2 – Dynamic text with variables 
+10 varName = "Anna"
+20 varAge = 25
+30 text1.caption = "Hello " + varName + ", you are " + varAge + " years old"
+40 text1.font = Arial
+50 text1.fontsize = 16
+60 text1.draw
+
+Example 3 – Text in a window 
+10 window1.size = (500,500,0)
+20 window1.caption = "Hello world!"
+30 window1.draw
+
+
+`,
+            "input": `**input** - instruction
+
+In 3D Basic, there are two different ways to use the input instruction.
+The first is with a window object, allowing you to create colorful and customized input fields with graphical styling.
+
+The second is a simpler method used in the print window, perfect for testing variables, syntax, or text strings without any graphics.
+In this test mode, the syntax has been intentionally simplified to make it quick and easy to check if your code or values work as expected.
+
+Syntax
+In a graphical window:
+windowName.input = "question text" + variable
+
+In the print/test window:
+input "question text" + variable
+
+
+Parameters
+question text – the message displayed to the user, e.g. "What is your name?"
+variable – the variable where the user’s input will be stored, e.g. varName or varAge
+
+Note: It’s recommended to avoid using the Swedish letters Å, Ä, and Ö in variable names. While they may sometimes work, they can cause instability or errors on computers using different language or encoding settings.
+Use varAlder instead of varÅlder, and varFarg instead of varFärg.
+
+
+Example 1 – Simple question in window 
+10 window1.size = (500,300,0)
+20 window1.input.fontcolor = white
+30 window1.input.color = darkblue
+40 window1.input.edgecolor = gray
+50 window1.input.edgesize = 2
+60 window1.input = "What is your name? " + varName
+70 window1.draw
+80 window1.input.visible = false
+90 window1.caption = "My name is " + varName
+100 window1.draw
+
+
+Example 2 – Numeric input 
+10 window1.size = (500,300,0)
+20 window1.input.fontcolor = black
+25 window1.input.fontsize = 25
+30 window1.input.color = yellow
+40 window1.input.edgecolor = red
+50 window1.input.edgesize = 4
+60 window1.input = "How old are you? " + varAge
+70 window1.draw
+
+
+Example 3 – In the print window 
+10 input "What is your name? " + varName
+20 print "Your name is: " + varName
+
+
+Tips
+The size and border of window.input are measured in pixels.
+Adjust colors, borders, and text before displaying the input field.
+To hide the input field after use, set: window1.input.visible = false
+
+
+
+`,
+            "teleport": `**teleport** - attribute
+
+The teleport attribute is used in FPS mode to instantly move the player between two points in the 3D world. This is especially useful in games where different environments may be rendered far apart. A typical use case is teleporting the player from the outside of a house to its interior, even if the interior is located somewhere else in the world.
+
+
+Teleportation can also be used to:
+move the player to the next level
+create secret shortcuts
+escape enemies
+trigger scripted events automatically
+
+
+Arrival placement and orientation
+When teleporting, the player is placed next to the target object. If this placement is not desired, you can:
+rotate the target object, or
+make the target object invisible (see Example 2)
+
+
+Player rotation affects arrival
+In addition to the target object’s orientation, the player’s own rotation determines the direction they will face after the teleport.
+For example, if you previously wrote: player1.rotate = (0,90,0)
+the player will appear facing exactly this direction after the teleport.
+This allows you to control what the player sees upon arrival.
+If this is not desired, adjust player1.rotate either before or immediately after the teleport.
+
+
+Limitations and special cases 
+Invisible objects 
+Teleporting from an object that is invisible using visible=false does not work — you can only teleport to such an object.
+✔ But if the object is fully transparent instead (transparent=100%), teleporting from the object works normally.
+This makes it possible to create invisible teleport surfaces that still function.
+
+
+Animating teleport objects
+Objects with the teleport attribute can also be animated, enabling creative gameplay effects:
+An enemy can run over the player and teleport them
+A creature can “swallow” the player
+A pipe or transport system can move the player forward
+Teleportation works even while the object is moving.
+
+
+Syntax 
+objectName.teleport = true to targetObject
+
+If the value is false, no teleporting occurs.
+All 3D objects in 3D Basic can be used as teleport sources or targets. 
+
+
+
+Example 1 – Teleporting from a visible box to another visible box 
+10 box2.size=(2,2,2)
+20 box2.teleport=true to box3
+30 box2.move=(0,1,-5)
+40 box2.color=green
+50 box2.draw
+
+60 rem ------------ blue box the player will teleport to
+70 box3.size=(2,2,2)
+80 box3.move=(0,1,5)
+90 box3.color=blue
+100 box3.draw
+
+110 player1.mode=fps
+120 player1.draw
+
+
+Example 2 – Teleporting to an invisible object 
+10 box2.size=(2,2,2)
+20 box2.teleport=true to box3
+30 box2.move=(0,1,-5)
+40 box2.color=green
+50 box2.draw
+
+60 rem ------------ invisible box the player will teleport to
+70 box3.size=(2,2,2)
+80 box3.move=(0,1,5)
+90 box3.visible=false     ' make the box invisible
+100 box3.draw
+
+110 player1.mode=fps
+120 player1.draw
+
+
+
+All 3D objects in 3D Basic can be used as teleportation points. 
+
+`,
+            "intensity": `**intensity** - attribute
+
+The attribute intensity is used to define how strong or how dense an effect is. The meaning of the attribute depends on the type of object it belongs to:
+
+1. Light Sources (sun, pinlight, spotlight)
+For lights, intensity determines how bright the light shines.
+The value is given in percent (0–100):
+
+0 = the light is completely off
+100 = maximum brightness
+For pinlight and spotlight, a higher intensity also increases the light reach.
+
+
+Example:
+sun1.intensity = 80        ' strong sunlight
+pinlight1.intensity = 40   ' dimmer point light
+spotlight1.intensity = 0   ' turns the spotlight off
+
+
+2. Particle Effects (snow, rain, smoke, stars, fireworks)
+For particle systems, intensity defines how many particles are shown at the same time.
+A higher value means a denser or stronger effect.
+
+Example:
+particle1.snow.intensity = 50000     ' heavy snowfall
+particle1.rain.intensity = 3000      ' medium rain
+particle1.smoke.intensity = 100000   ' thick smoke
+particle1.stars.intensity = 3000     ' dense starfield
+particle1.fireworks.intensity = 30000 ' large firework burst
+
+
+
+Summary 
+
+Object                          Meaning of intensity
+Light sources                Brightness in percent (0–100). Also affects reach for pinlight/spotlight.
+Particles                       Number of particles shown at once. Higher value = denser effect.
+
+
+
+
+`,
+            "attachLight": `**attachLight** - attribute
+
+The attachLight attribute is used to link a light source to a 3D object.
+When a light is attached, it follows the object’s movements and animations, allowing for dynamic effects such as car headlights, street lamps, glowing suns, or illuminated houses.
+
+The light types that can be used with attachLight are:
+spotlight, pinlight, and sun.
+Note that ambient cannot be attached to an object.
+
+All 3D objects in the language can have a light attached through attachLight, making it easy to create unique lighting effects for different objects.
+
+Syntax:
+objectName.attachLight = lightObject
+
+
+Example: 
+10 sphere1.size = 1
+20 sphere1.color = blue
+30 spotlight1.intensity = 80
+40 spotlight1.color = white
+50 spotlight1.angle = 50
+60 spotlight1.move = (0, 5, 1)
+70 spotlight1.prop.visible = false
+80 spotlight1.draw
+90 sphere1.attachLight = spotlight1
+100 sphere1.animate.orbit = (3, 0, 360, 0, 0)
+110 sphere1.move = (0, 4, 0)
+112 render
+
+In this example, a spotlight is attached to a sphere that moves in orbit. The light follows the sphere as it moves, creating a realistic illumination effect. 
+
+
+
+
+`,
+            "angle": `**angle** - attribute
+
+Controls both the spotlight cone angle and the arc height in bow animations
+The angle attribute is used in two different contexts in the language: 
+
+1. For spotlights:
+angle controls the spread (in degrees) of the spotlight’s light cone.
+Low value → narrow, focused beam.
+High value → wide beam with larger light coverage.
+
+2. For bow animations:
+angle determines how high the arc becomes when an object is animated using animate.bow.
+Low value → a low, shallow arc.
+High value → a higher and more pronounced arc.
+(If the value is 0 or negative, the animation falls back to a normal straight movement.)
+
+
+Syntax examples (spotlight) 
+spotlight1.angle = 15    ' narrow beam, like a flashlight
+spotlight1.angle = 60    ' wide beam, covering a larger area
+
+
+Syntax examples (bow animation) 
+box1.bow.angle = 45      ' 45-degree arc
+box1.animate.bow = (0,1,0) to (5,1,0)
+
+
+Note
+angle affects only spotlights and bow animations.
+It does not affect sun or pinlight.
+
+
+
+`,
+            "bow": `**bow** - attribute
+
+Animating an object in an arc
+The bow attribute allows you to animate an object along an arc-shaped path, similar to a jump or a thrown object. This creates more dynamic motion than a standard straight-line animation.
+
+To animate with an arc, you first set bow.angle, which controls how high the arc will be. Then you specify at least two points in 3D space for the object to travel between.
+
+
+Syntax 
+objectName.bow.angle = value      
+objectName.animate.bow = (x1,y1,z1) to (x2,y2,z2) to (xn,yN,zN)
+
+- bow.angle determines the arc height: higher values = higher arcs.
+- animate.bow defines the path of points. At least two points are required.
+
+
+
+Example 1 – the box “jumps” between two points 
+10 box1.size = (2,2,2)
+20 box1.move = (0,1,0)
+30 box1.bow.angle = 45     ' 45 degrees
+40 box1.animate.bow = (0,1,0) to (5,1,0)
+50 box1.draw
+The box moves between the points in a 45° arc.  
+
+
+Example 2 – the box jumps and lands on a higher level 
+10 box1.size = (2,2,2)
+20 box1.move = (0,1,0)
+30 box1.bow.angle = 60     ' 60 degrees
+40 box1.animate.bow = (0,1,0) to (5,5,0)
+50 box1.animate.time = 3   ' animation lasts three seconds
+60 box1.draw
+The object travels in an arc and ends on a higher point. 
+
+
+Notes
+All 3D objects in the language can be animated with the bow function.
+If bow.angle is set to 0 or a negative value, a standard straight-line animation is used instead.
+
+
+
+`,
+            "wedge": `**wedge** - object
+
+A wedge is a wedge-shaped body — a rectangular 3D box with a slanted roof. The shape has six sides: four vertical walls, a flat bottom, and a top surface that slopes from one short side to the other.
+
+Wedges are often used to create ramps, slanted roofs, inclined walls, or other asymmetric shapes in a 3D world. Unlike a regular box, the two opposite top corners along the Z-axis have different heights, which creates a sloping top surface.
+
+
+Syntax:
+objectName.size = (width, depth, frontHeight, backHeight)
+
+width – size along the x-axis (left to right)
+depth – size along the y-axis (front to back)
+frontHeight – height along the z-axis at the front edge (y = 0)
+backHeight – height along the z-axis at the back edge (y = depth)
+
+Example: 
+10 wedge1.size = (5, 2, 2, 3)
+20 wedge1.hue=100
+30 wedge1.pattern="stripes"      
+40 wedge1.move=(0,3,0)
+50 wedge1.draw
+
+
+Important tips:
+frontHeight and backHeight control the slope. If both values are the same, the top becomes flat like a regular box. The slope occurs along the y-axis (front to back). If you want the wedge to slope along the x-axis (left to right), you can rotate the shape.
+
+
+`,
+            "if": `**if** - instruction
+
+ – Conditional Logic 
+The IF instruction is used to test a condition in your program. With IF, you can control whether certain instructions should run or be skipped, depending on whether an expression is true or false.
+
+If the IF condition is true, the program continues with the next instruction on the same line.
+If the condition is false, the rest of the line is ignored.
+
+
+Syntax 
+if [condition]
+
+condition
+A logical expression that must evaluate to true or false.
+Supported comparison operators:
+=, <>, <, >, <=, >=
+
+
+Example 1 – Simple comparison 
+10 IF varScore > 100 THEN GOTO 200
+This checks whether the variable varScore is greater than 100.
+If the condition is true, the program jumps to line 200.
+If it is false, nothing happens and execution continues to the next line. 
+
+Example 2 – Calling a subroutine 
+10 IF varScore = 0 THEN CALL subENDGAME
+If the variable varScore equals zero, the program calls the subroutine subENDGAME. 
+
+
+Example 3 – Two interactive buttons.This example creates two buttons, “Yes” and “No,” and checks whether the user clicks either of them. 
+
+10 window1.size = (200, 100, 0)
+20 window1.move = (100, 100, 100)
+30 window1.caption = "Yes"
+40 window1.button = true
+50 window1.draw
+
+60 window2.size = (200, 100, 0)
+70 window2.move = (400, 100, 100)
+80 window2.caption = "No"
+90 window2.button = true
+100 window2.draw
+
+110 IF window1.click THEN CALL subYES     ' starts subroutine subYES
+120 IF window2.click THEN CALL subNO      ' starts subroutine subNO
+130 GOTO 110
+
+Here, the program loops (lines 110–130) and checks if any of the buttons were clicked. 
+
+
+What is allowed inside an IF-statement?
+✔ Allowed
+- Comparing var-variables
+Examples: varX = 10, varY < 5, varA <> varB
+- Using the following instructions after IF:
+- CALL, GOTO, THEN
+- Checking object values such as .click
+
+Coming soon
+More advanced features and expressions will be available in future versions of 3D Basic.
+
+
+What is not allowed?
+❌ Not allowed
+Performing calculations directly in the IF condition
+Examples that do not work:
+
+IF 100/2 = 50 THEN ...
+IF varX + 10 > 20 THEN …
+
+The condition must always be a simple comparison between values or variables. 
+
+
+
+`,
+            "zoom": `**zoom** - attribute
+
+In 3D Basic, you can control the camera’s focal length, which affects how much the camera zooms in or out of the scene.
+
+A shorter focal length gives a wide-angle view with a larger field of view, while a longer focal length results in a more zoomed-in image with a narrower field of view.
+
+Syntax:
+objectName.attribute = value
+
+
+Examples of what different values produce: 
+camera1.zoom = 18     ' Wide angle
+camera1.zoom = 35     ' Normal focal length
+camera1.zoom = 85     ' Telephoto, mild zoom-in
+camera1.zoom = 200    ' Strong telephoto, heavy zoom-in
+
+Example – animated zoom over time: 
+10 camera1.animate.zoom = 18 to 200     ' Zooms from wide angle to telephoto
+20 camera1.zoom.time = 3 sec                  ' Animation lasts 3 seconds
+30 camera1.zoom.loop = 3                         ' Zoom animation repeats 3 times
+40 camera1.draw
+
+
+Alternative: 
+camera1.zoom.speed = 30   ' Instead of specifying time, specify the speed
+
+`,
+            "camera": `**camera** - object
+
+A camera is used to control the view in the 3D space. You can position, rotate, and zoom the camera, as well as animate its movement between different points.
+
+Syntax:
+objectName.attribute = value
+
+Example:
+10 camera1.move = (0, 5, -10)       ' Places the camera at X=0, Y=5, Z=-10
+20 camera1.zoom = 18                  ' Sets zoom (wide angle = low value)
+30 camera1.rotate = (0, 180, 0)     ' Rotates the camera toward the object
+40 camera1.draw
+
+
+
+Sets the camera’s focal length in millimeters (lower value = wider angle). 
+camera1.zoom = number
+
+Animates the zoom from one value to another.
+camera1.animate.zoom = start to end
+ 
+Specifies zoom speed in mm per second. 
+camera1.zoom.speed = number
+
+Zoom animation lasts 3 seconds. 
+camera1.zoom.time = 3 sec
+
+Animation loops endlessly. 
+camera1.zoom.loop = true
+
+Animation repeats 4 time 
+camera1.zoom.loop = 4
+
+ 
+
+
+Rotates the camera to a specific angle (in degrees) around each axis. 
+camera1.rotate = (x, y, z)
+
+Animates rotation from one position to another. 
+camera1.animate.rotate = (x1, y1, z1) to (x2, y2, z2)
+
+Sets rotation speed (unit optional, e.g., degrees/second). 
+camera1.rotate.speed = number
+
+Rotation duration. 
+camera1.rotate.time = 3 sec
+
+Rotation repeats endlessly. 
+camera1.rotate.loop = true
+
+Rotation repeats 4 times.
+camera1.rotate.loop = 4
+
+
+Movement along a path: The camera travels through multiple points in the 3D space. 
+camera1.animate = (x1, y1, z1) to (x2, y2, z2) to ...
+
+
+
+`,
+            "children and child": `**children and child** - attribute
+
+CHILDREN och CHILD
+With CHILDREN and CHILD, you can create copies of an object that act as children to a parent object.
+This is a simple and powerful way to create groups of related objects — for example, multiple boxes, spheres, or lights that should follow the same settings as their parent.
+The children always inherit the parent’s properties, except for the position (move).
+If you change the parent’s size, color, or texture, all children are automatically affected.
+However, if you change a specific property on an individual child, that change will remain — independent from the parent.
+
+NOTE!
+Child objects do not inherit any properties assigned through 3D Basic’s label system.
+This means that settings like: 
+
+box1.b1.color = green
+box1.b2.image = "woodfloor"
+are not transferred to the child objects.
+
+The reason is that child objects are created as complete, independent meshes,
+while adult (parent) 3D figures can be much more complex,
+sometimes built from several separate surface zones (labels).
+
+Since these labeled zones are internal parts of the parent’s mesh,
+they cannot be directly copied to the children.
+Only the parent’s basic properties — such as color, size, image, roundness, and similar — are automatically inherited.
+
+Syntax 
+objectName.children = value
+objectName.children.attribute = value
+objectName.childNumber.attribute = value
+
+Part                                    Explanation
+children                                Sets how many children should be created.
+children.attribute                      Changes an attribute for all children at once.
+childNumber.attribute                   Changes an attribute for a specific child.
+
+
+Example 1 — Draws a parent and three children 
+10 box1.size = (2,2,2)
+20 box1.image = "brickwall"
+30 box1.move = (5,1,0)
+40 box1.children = 3
+50 box1.children.move = (7,1,0)
+60 box1.children.spacing = (2,0,0)
+70 box1.draw
+
+
+Example 2 — Draws a parent and five children (child 3 is invisible) 
+10 box1.size = (2,2,2)
+20 box1.color = red
+30 box1.move = (0,1,0)
+40 box1.children = 5
+50 box1.children.move = (5,1,0)
+60 box1.children.spacing = (2,0,0)
+70 box1.child1.rotate = (0,45,0)
+80 box1.child3.visible = false
+90 box1.child4.move = (-5,1,0)
+100 box1.draw
+
+
+Example 3 — After 5 seconds all children become invisible 
+10 sphere1.size = 1
+20 sphere1.color = blue
+30 sphere1.move = (0,3,0)
+40 sphere1.children = 5
+50 sphere1.children.move = (5,1,5)
+60 sphere1.children.spacing = (3,0,3)
+70 sphere1.child4.color = yellow
+80 sphere1.child5.transparent = 80
+90 sphere1.draw
+100 sleep 5
+110 sphere1.children.visible = false    ' barnen blir osynliga
+120 sphere1.draw
+
+
+
+Example 4 — Animation: 3 children follow the parent 
+10 box1.size = (2,2,2)
+20 box1.transparent = 50
+30 box1.roundness = 20
+40 box1.color = green
+50 box1.animate = (5,1,0) to (-5,1,0)
+60 box1.children = 3
+70 box1.children.move = (0,1,5)
+80 box1.children.spacing = (2,0,0)
+90 box1.draw
+
+
+Tips
+CHILDREN affects all children at once.
+CHILD with a number (e.g., child2) allows adjustments to individual children.
+If you change anything in the parent and run again, the children update automatically.
+To remove all children, write: objectName.children = 0
+
+
+
+
+`,
+            "spotlight": `**spotlight** - object
+
+Creates a directional light (spotlight) using the spot object.
+A spotlight works in the same way as a sun object, but its size cannot be changed.
+The prop is always a cone in a standard size.
+
+Syntax options for the spot object
+spotlightName.intensity = 0-100%          	  ' Light intensity
+spotlightName.angle = degrees             	  ' Light spread
+spotlightName.color = hex/colorName       	  ' Light color
+spotlightName.prop.color = hex/colorName   ' Color of the cone prop
+spotlightName.visible = true/false        	  ' Light + cone
+spotlightName.prop.visible = true/false   	   ' Cone only
+spotlightName.move = (x,y,z)               	  ' Move light + prop
+spotlightName.rotate = (x,y,z)              	 ' Rotate light + prop
+spotlightName.image = "url"                 	 ' Image
+spotlightName.imagerotate = (x,y,z)        	 ' Rotate image
+spotlightName.draw
+
+Faces label for spotlight objects: spo1 
+
+Example using angle 
+10 spotlight1.visible = true              	  ' Turns on the light and the cone
+20 spotlight1.intensity = 70              	  ' Light intensity and range
+30 spotlight1.angle = 30                   	  ' Light spread from the cone
+40 spotlight1.prop.visible = false            ' The cone becomes invisible
+50 spotlight1.draw
+
+
+`,
+            "glass": `**glass** - attribute
+
+The glass attribute makes an object transparent with light refraction.
+Higher values produce a stronger glass effect, useful for windows, screens, water, and aquariums. 
+
+Syntax
+objectName.glass = value            ' Value in percent (0–100)
+objectName.SurfaceName.glass = value
+
+value is given in percent:
+0 = no transparency
+100 = full glass effect
+
+
+Example 1 – A transparent glass plate above the standard grid 
+10 box1.size=(10,10,0.5)
+20 box1.move=(0,1,0)
+30 box1.glass=100
+40 box1.draw
+
+Example 2 – Drawing an aquarium 
+10 box1.size=(2,4,2)
+20 box1.move=(0,1,0)
+30 box1.color=lightblue
+40 box1.glass=100
+50 box1.edge=true
+60 box1.draw
+
+Example 3 – A green box with one blue glass surface and one green glass surface 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=green
+40 box1.b1.glass=100    ' Entire b1 surface becomes glass
+50 box1.b2.color=blue   ' Surface b2 becomes blue
+60 box1.b2.glass=100    ' Surface b2 becomes glass
+70 box1.edge=true       ' Black edges
+80 box1.draw
+
+
+
+`,
+            "frame": `**frame** - object
+
+The frame object is like a rectangular frame with depth – similar to a thin box with a hole in the middle. This means the object has both outer and inner surfaces.
+All measurements follow the metric system. 
+
+Syntax:
+objectName.size = (width, height, thickness) 
+
+Example:
+10 frame1.size = (5, 1, 2)        ' Creates a frame 5 wide, 1 high, and 2 deep
+20 frame1.draw
+
+Labels:
+The frame object has 16 labels: f1, f2, f3, f4 … f16.
+These labels cover all outer and inner surfaces of the frame.
+
+Example of using labels:
+10 frame1.f1.color = red                         ' Sätter färgen på etikett f1
+20 glue box1.b1 to frame1.f8 = true
+
+
+
+`,
+            "loop": `**loop** - attribute
+
+The loop attribute is used to repeat an animation or other time-controlled event multiple times, or to let it run in an infinite cycle. It can be used with various animation commands such as animate.rotate, animate.zoom, and similar, as well as with sound objects to repeat audio. 
+
+Syntax
+objectName.animate.loop = true        ' Loops the animation infinitely
+objectName.animate.loop = count       ' Number of times the animation repeats
+soundName.loop = true                 ' Plays the sound in an endless loop
+soundName.loop = count                ' Plays the sound a set number of times
+
+Example 1 – Infinite animation loop 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.animate.rotate = (0, 0, 0) to (0, 360, 0)
+40 box1.animate.time = 5 sec
+50 box1.animate.loop = true           ' Spins forever
+60 box1.draw
+
+Example 2 – Loop a fixed number of times  
+10 sphere1.size=1
+20 sphere1.move=(0,2,0)
+30 sphere1.animate = (0, 0, 0) to (0, 5, 0)
+40 sphere1.animate.loop = 3           ' Repeats 3 times
+50 sphere1.draw
+
+Example 3 – Looping audio 
+10 sound1.musicfile = "background.wav"
+20 sound1.volume = 70
+30 sound1.loop = true                 ' Sound plays endlessly
+40 sound1.play
+
+Tip
+loop works for both animations and sound.
+
+
+
+`,
+            "helix": `**helix** - object
+
+A helix is a 3D spiral that can be used to create dynamic and visually interesting shapes in a scene. By adjusting the radius, height, number of turns, and thickness, you can customize the helix for anything from architectural details to abstract art or effects that convey movement and energy. All measurements use the metric system. 
+
+Syntax:
+objectName.size = (radius, height, turns, thickness)
+
+Parameters:
+radius – Distance from the center to the spiral’s curve horizontally.
+height – Total height of the spiral along the Z-axis.
+turns – Number of full turns the spiral makes along its height.
+thickness – Thickness of the spiral’s wire (spiral “diameter”).
+
+Properties:
+By default, the helix is solid.
+To display the helix as a wireframe:
+1. edge = true – enables edges
+2. edgecolor = <color> – sets the color of the edges
+3. transparent = 100 – makes the object invisible while keeping the wireframe
+
+Example 1: Red helix with black edges
+10 helix1.size = (1, 5, 8, 0.2)        ' radius 1, height 5, 8 turns, thickness 0.2
+20 helix1.color = red                 	    ' makes the object red
+30 helix1.edge = true                    ' enable edges
+40 helix1.edgecolor = black          ' edges in black
+50 helix1.rotate = (0, 45, 0)         ' rotate 45 degrees around Y-axis
+60 helix1.draw
+
+Example 2: Helix as black wireframe 
+10 helix1.size = (1, 5, 8, 0.2)     	  ' radius 1, height 5, 8 turns, thickness 0.2
+20 helix1.transparent = 100         	  ' object becomes invisible
+30 helix1.edge = true                 	  ' enable edges
+40 helix1.edgecolor = black          	  ' edges in black
+50 helix1.draw
+
+
+`,
+            "mobius": `**mobius** - object
+
+The mobius object creates a 3D shape in the form of a Möbius strip — a twisted band with only one side and one edge. All geometric parameters are defined using the SIZE attribute and must follow a fixed order. 
+
+Syntax:
+mobiusName.size = (radius, width, twist, segment, thickness)
+
+Parameter            Type             Description
+radius               numeric          Distance from the center to the middle of the strip’s width.
+width                numeric          The width of the strip.
+twist                numeric          Number of half-twists (Möbius standard = 1).
+segment              integer          Number of segments along the strip (higher = smoother surface).
+thickness            numeric          Material thickness. 0 = thin surface.
+
+Example 
+10 mobius1.size = (2 2, 1, 32, 3)
+20 mobius1.color = blue
+30 mobius1.draw
+
+Example — using variables 
+10 varRadius = 12
+20 varWidth = 25
+30 varTwist = 2
+40 varSegments = 96
+50 varThickness = 3
+60 mobius1.size = (varRadius, varWidth, varTwist, varSegments, varThickness)
+70 mobius1.color = gold
+80 mobius1.draw
+
+Example — animated rotation 
+10 mobius1.size = (2, 2, 1, 64, 2)
+20 mobius1.color = red
+30 mobius1.animate.rotate = (0,0,0) to (0, 360, 0)  '  Full rotation around the Y-axis
+40 mobius1.animate.time = 5 sec
+50 mobius1.draw
+
+
+`,
+            "transparent": `**transparent** - attribute
+
+The transparent attribute is used to make an object or a specific surface partially see-through.
+
+The value is given as a percentage, where:
+0 = fully opaque (no transparency)
+100 = completely invisible
+
+Transparency affects only visibility – the object still exists physically in the scene and can collide or interact with other objects normally.
+
+
+Syntax
+objectName.transparent = value
+objectName.surfaceName.transparent = value
+
+value is an integer from 0 to 100
+surfaceName can be b1, b2 etc.
+
+Example 1 – Semi-transparent box 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=gold
+40 box1.transparent = 50          ' Object is 50% transparent
+50 box1.draw
+
+Example 2 – Only one surface becomes transparent 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=blue
+40 box1.faces = true              		' Display surface names
+50 box1.b3.transparent = 80       ' Surface b3 is almost invisible
+60 box1.draw
+
+Tips
+Combine transparent with materials like glass, metal, or marble for beautiful visual effects.
+Great for creating water, liquids, or windows.
+Transparency influences how light and shadows pass through the object.
+Useful for making invisible teleport points or hidden areas.
+
+
+`,
+            "prism": `**prism** - object
+
+The prism object is a polygonal column where you define the number of sides of the base, as well as the base radius and height in meters.
+This allows prisms to range from triangular to many-sided columns. 
+
+Syntax:
+objectName.size = (baseRadius, height, sides) 
+
+Example
+10 prism1.size = (3, 8, 6)     ' Creates a hexagonal prism
+20 prism1.draw
+30 prism2.size = (3, 8, 3)     ' Creates a triangular prism
+40 prism2.draw
+
+Labels:
+Prism has a dynamic label system.
+The number of labels depends on the number of sides.
+Labels are named in order: pr1, pr2, pr3, …
+Each label corresponds to one surface of the prism.
+
+Example of using labels:
+10 prism1.size = (3, 8, 6)
+20 prism1.pr1.color = red     ' Sets the color of one prism side
+30 prism1.draw
+
+
+`,
+            "pyramid": `**pyramid** - object
+
+The pyramid object creates a three-dimensional shape with a single top vertex and a polygonal base.
+All corners of the base are connected to the top point, forming a solid pyramid body.
+The base shape is determined by the number of sides – for example, sides = 3 creates a triangular base, sides = 4 a square base (classic pyramid shape), and so on.
+The base corners are automatically placed evenly around the origin.
+
+Syntax:
+objectName.size = (baseRadius, height, sides)
+
+Parameters:
+baseRadius – the radius from the pyramid’s center to the base corners (in meters).
+height – the pyramid’s height in meters (from base to top).
+sides – number of sides on the base (e.g., 3 = triangle, 4 = square, 5 = pentagon, etc.).
+
+Faces and labels:
+The pyramid’s faces follow the label system:
+py1 is the base plate.
+py2, py3, py4, etc. are the side faces, arranged around the base.
+Each face can be modified individually using properties such as .color, .visible, .texture, and so on.
+
+Example:
+10 pyramid1.size = (5, 7, 4)    ' Four-sided pyramid, 5 m radius, 7 m height
+20 pyramid2.size = (3, 6, 3)    ' Creates a triangular pyramid (tetrahedron-like)
+30 render
+
+Face example: 
+10 pyramid1.size = (2, 3, 4)
+20 pyramid1.py1.visible = false   ' Makes the base (py1) invisible
+30 pyramid1.py2.color = red        ' Sets side face py2 to red
+40 pyramid1.draw
+
+
+Tips:
+Increase the number of sides to create more polygonal or rounded pyramid shapes.
+Combine .texture with colors to create stone-like or glass-like materials.
+By hiding the base, you can use the pyramid as a roof or spire in custom structures.
+Use .move to position the pyramid precisely, either by its top point or its base center.
+
+
+`,
+            "heart": `**heart** - object
+
+The heart object creates a 3D heart shape. It can be used as a decorative element or as a game object. Size is specified in meters.
+NOTE! If any parameter is set to 0, no heart will be created on the screen.
+
+Syntax:
+objectName.size = (width, height, thickness)
+
+Parameters:
+width – the heart’s width along the x-axis.
+height – the heart’s height along the y-axis.
+thickness – the heart’s depth along the z-axis.
+
+
+Exempel:
+10 heart1.size = (5, 5, 1)   ' Creates a 3D heart, 5x5 meters, 1 meter thick  
+20 heart1.color = red  
+30 heart1.move = (0, 4, 0)  
+40 heart1.draw
+
+
+Tips:
+Use Z/thickness = 0.1 to create a 2D-like heart.
+Combine with .gloss, or .transparent for special effects.
+
+
+
+`,
+            "rainbow": `**rainbow** - object
+
+The rainbow object creates an arc shaped like a rainbow.
+Previously, rainbow was a purely 2D object, but it is now a true 3D object with real thickness and depth.
+
+The rainbow is built from multiple colored segments (bands) that together form the arc.
+Colors can either follow the classic rainbow automatically or be controlled manually using the faces system.
+
+Syntax:
+rainbowName.size = (innerRadius, outerRadius, yOffset, segments, thickness)
+
+                                    Parameters:
+-innerRadius
+The inner radius of the rainbow.
+
+-outerRadius
+The outer radius of the rainbow.
+The difference between the inner and outer radius determines the width of the rainbow.
+
+-yOffset
+Vertical offset applied when the object is created.
+Note: Positioning can also be done using the .move attribute.
+This parameter exists mainly as a concession to the shape system, which uses this value directly in its syntax.
+
+-segments
+Number of segments used to build the arc.
+More segments result in a smoother, more rounded rainbow.
+
+-thickness (new parameter)
+Defines the depth of the rainbow along the Z-axis.
+This parameter is what makes rainbow a true 3D object instead of a flat 2D shape.
+
+
+
+Color Control
+By default, rainbow uses the seven classic rainbow colors
+(red → orange → yellow → green → blue → indigo → violet).
+Each color band is a separate face and can be controlled individually using the faces system:
+r1, r2, r3, … etc.
+You can modify color, visibility, and other face properties for each band.
+
+
+
+
+Example 
+10 rainbow1.size = (4, 2, 5, 100, 4)
+20 rainbow1.move = (0, 0, 0)
+30 rainbow1.r1.color = white     ' Changes the first color band to white
+40 rainbow1.r2.color = black     ' Changes the second color band to black
+50 rainbow1.r3.visible = false  ' Hides color band 3
+60 rainbow1.draw
+
+
+
+Tips:
+-use  rainbowName.faces = true to display the names of all color bands (r1, r2, r3, …). This makes it much easier to fine-tune colors and visibility.
+-The more segments you use, the smoother the arc becomes. For a very smooth rainbow, at least 100 segments are recommended.
+-By customizing the colors of individual bands, you can create unique rainbow styles:
+neon rainbows, monochrome arcs,sci-fi or fantasy effects
+-Since rainbow is now a 3D object, it reacts to lighting, rotation, and camera movement just like other 3D shapes.
+
+
+
+
+
+`,
+            "dome": `**dome** - object
+
+The dome object is a hemisphere — a dome-shaped body used to create rounded roofs, heads, or skies in a 3D scene. All measurements are given in the metric system. 
+
+Syntax:
+objectName.size = (radius, height)
+
+
+Exemple: 
+10 dome1.size = (5, 3)    ' a hemisphere with a 5-meter radius and 3-meter height
+20 dome1.draw
+
+
+When creating a very large dome, it can serve as the foundation for a planetarium, a dome structure, or a vast sky in a game world.
+Surfaces (d1 and d2):
+surface d1 is the base plate
+surface d2 is the dome itself
+Each surface can have its own color, material, or texture settings.
+
+Example:
+10 dome1.size = (2, 2) 
+20 dome1.d1.color = red
+30 dome1.draw
+
+In this example, the dome (d2) becomes red while the base plate (d1) remains uncolored. 
+
+
+`,
+            "spiral": `**spiral** - object
+
+The SPIRAL object is a 3D shape that is visually perceived as fairly flat.
+It extends mainly within the X and Y plane, while the Z dimension is usually affected only slightly. A spiral can be used for decorative shapes, animation paths, maze-like patterns or visual effects. 
+
+Syntax:
+objectName.size = (radiusStart, radiusEnd, turns, thickness)
+
+
+Parameter 
+radiusStart - Where the spiral begins in relation to the center. (e.g., 0 = starts at the center) 
+radiusEnd - How far outward the spiral extends from the center. 
+Turns – The number of full rotations around the center. 
+thickness – The line thickness of the spiral (e.g., 0.1–5 meters). 
+
+
+Example 
+10 spiral1.size = (1, 3, 4, 0.3)   '1m from center, ends at 3m, 4 turns, 0.3m thickness
+20 spiral1.color = blue
+30 spiral1.move = (0, 3, 0)       'Moves the spiral 3m upward on the Y axis
+40 spiral1.draw
+
+
+Design tips
+Higher turns → denser and longer spiral
+Small radiusStart + large radiusEnd → strong outward expansion
+Increasing thickness generates a ribbon-like appearance
+
+
+`,
+            "torus": `**torus** - object
+
+The TORUS object has a donut-shaped geometry.
+
+You specify two measurements:
+1. outer_radius – the distance from the center to the middle of the ring
+2. inner_radius – the thickness of the ring
+All dimensions are defined in meters.
+
+The torus uses only one surface name: t1
+
+Changing the inner_radius value controls both the size of the hole and the thickness of the donut:
+Lower values create a thinner ring with a larger hole
+Higher values create a thicker donut with a smaller hole
+
+Syntax 
+objectName.size = (stor_radie, ring_radie)
+
+Example 
+10 torus1.size = (4, 1)     'outer radius 4 meters, inner radius 1 meter
+20 torus1.draw
+
+
+`,
+            "background": `**background** - instruction
+
+The background instruction controls everything displayed in the background.
+It replaces the former object stage, which has been removed from the language.
+
+background is not an object, even though its syntax is similar to objects.
+Therefore, it cannot be given a name – it should simply be written as background.
+With background, you can set a background color, background image, rotate the image, and also use gradients.
+Since background is not an object, no draw or render instruction is required – the background updates automatically.
+
+Syntax: 
+background.color = colorname/hex
+background.image = "URL"
+background.image = "image.jpg"
+background.imagerotate = value
+background.video= "URL"
+
+
+Gradients:
+background supports the same gradient types as objects:
+linear, radial, diamond, and conical.
+You can use two or more colors in sequence, separated by to.
+background.repeat can be used to repeat the pattern multiple times.
+
+
+Syntax:
+background.linear = color1 to color2
+background.radial = color1 to color2 to color3 ...
+background.diamond = color1 to color2
+background.conical = color1 to color2 to color3 ...
+background.repeat = value
+
+
+Example 1 – solid color 
+10 background.color = black      ' solid black background
+
+
+Example 2 – background image 
+10 background.image = "stars.jpg"   ' starry sky
+20 background.imagerotate = 90      ' rotates the image 90 degrees
+
+To make sure the program can find the image file, it must be located in the same folder as the HTML file that runs the 3D Basic program. 
+
+Example 3 – linear gradient  
+10 background.linear = red to yellow to blue
+
+Example 4 – conical gradient with repetition 
+10 background.conical = black to purple to blue
+20 background.repeat = 10      '    defines how many times the pattern repeats
+
+`,
+            "conical": `**conical** - attribute
+
+conical creates a circular gradient that rotates around a center point — similar to a color wheel.
+Perfect for abstract designs, vortex effects, or rotating surface colors.
+
+conical can be applied to entire objects or to individual surfaces using objectName.surfaceName.
+
+syntax
+objectName.conical = color1 to color2  
+objectName.conical = hex1 to hex2 to hex3 ...
+objectName.surfaceName.conical = color1 to color2  
+objectName.surfaceName.conical = hex1 to hex2 to hex3 ...
+
+
+At least two colors are required, but you can use as many as you like. 
+
+Example 
+10 box1.size=(2,2,2)
+20 box1.b1.conical = red to blue to green
+30 box1.draw
+
+
+`,
+            "radial": `**radial** - attribute
+
+radial creates a circular gradient that starts from the center and fades outward.
+Perfect for glowing effects, suns, or any surface with a focal point.
+
+radial can be used for entire objects or individual surfaces using objectName.surfaceName.
+
+syntax
+objectName.radial = color1 to color2  
+objectName.radial = hex1 to hex2 to hex3 ...
+objectName.surfaceName.radial = color1 to color2  
+objectName.surfaceName.radial = hex1 to hex2 to hex3 ...
+
+
+At least two colors are required, but you can use as many as you like. 
+
+example
+10 box1.size=(2,2,2)
+20 box1.b1.radial = red to yellow to blue
+30 box1.draw
+
+
+`,
+            "particle": `**particle** - object
+
+The particle object is used to create various particle systems, such as snow, rain, smoke, starfields, and fireworks.
+Particles are drawn on top of the scene and can be animated in real time to create vivid and dynamic effects.
+
+Syntax:
+particleName.type.intensity = value
+
+
+Basic Properties
+All particle effects share the same types of settings:
+
+
+Property          Description                                                                                        Example
+intensity          How many particles are displayed at the same time                         particle1.snow.intensity = 5000
+color               The color of the particles (can be a color name or hex value)            particle1.rain.color = steelblue
+speed              How fast the particles move                                                               particle1.smoke.speed = 5
+time                How long the particles are shown (if not set, they last indefinitely)   particle1.snow.time = 10
+
+Note: Many particles include slight transparency. Depending on the background, the color may appear lighter or darker.
+
+Summary 
+Effect              Best Used For                                        Recommended Background
+snow                winter, cold, magical atmosphere                     Any, dark recommended
+rain                storms, drama, realism                                Any, dark recommended
+smoke               volcano, fire, mystery                              Light background recommended
+stars               space, night, speed effects                          Dark background
+fireworks           celebrations, New Year, spectacle               Dark background
+
+
+
+`,
+            "snow": `**snow** - attribute
+
+Visual Appearance
+Snow particles are small and round, similar to light dots or soft snowflakes.
+They fall slowly and drift slightly, creating a soft and natural snow effect.
+Useful for winter scenes, fairy-tale environments, and gentle atmosphere. 
+
+Syntax:
+particleName.snow.intensity = value
+particleName.snow.color = color
+particleName.snow.speed = value
+particleName.snow.time = value
+particleName.draw
+
+
+Example: fairy-tale snow
+10 background.color=black
+20 particle1.snow.intensity = 50000
+30 particle1.snow.color = white
+40 particle1.snow.speed = 10
+50 particle1.draw
+
+
+`,
+            "smoke": `**smoke** - attribute
+
+Useful for volcano effects, fire, mysterious atmospheres, etc.
+Works best against light backgrounds. Each particle includes a smooth gradient. 
+
+Syntax:
+particleName.smoke.intensity = value
+particleName.smoke.color = color
+particleName.smoke.speed = value
+particleName.smoke.time = value
+particleName.draw
+
+
+Example: 
+10 background.color = white
+20 particle1.smoke.intensity = 100000
+30 particle1.smoke.color = red
+40 particle1.smoke.speed = 5
+50 article1.draw
+
+
+
+`,
+            "stars": `**stars** - attribute
+
+Creates stars that may be static or move in different directions. 
+
+Syntax:
+particleName.stars.intensity = value
+particleName.stars.color = color
+particleName.stars.speed = value
+particleName.stars.type = type
+particleName.stars.time = value
+particleName.stars.rotate = (x,y,z)
+particleName.draw
+
+
+Type                                  Description
+still                                    Static starfield
+rnd                                    Stars move randomly
+up / down / left / right       Stars scroll in the chosen direction
+radial                                  Stars burst outward from the center (warp-speed effect)
+
+
+
+Example (warp-speed space travel): 
+10 background.color = black
+20 particle1.stars.intensity = 3000
+30 particle1.stars.color = white
+40 particle1.stars.speed = 100
+50 particle1.stars.type = radial
+60 particle1.draw
+
+
+Example (looks like flying insects at night): 
+10 background.color=black
+20 particle1.stars.type = rnd
+30 particle1.stars.intensity = 100
+40 particle1.stars.color = white
+50 particle1.stars.speed=50
+60 particle1.draw
+
+
+`,
+            "sun": `**sun** - object
+
+In 3D Basic, the sun object is used to create and control directional sunlight in a 3D scene.
+
+The sun consists of two components:
+-the light source, which emits light
+-the prop sphere, which visually represents the sun
+
+You can control both parts together or individually.
+
+Syntax and Attributes
+sunName.prop.size = radius	             'Creates a sphere that visually represents the sun.  
+sunName.intensity = 0–100	               '0 = off, 100 = maximum intensity.  
+sunName.color = hex/colorName     	     'Changes the color of the light. 
+sunName.prop.color = hex/colorName       'Color of the sun’s visual sphere. 
+sunName.visible = true/false	                 'Shows or hides both the light and the sphere. 
+sunName.prop.visible = true/false            'Shows or hides only the sphere, 
+sunName.move = (x,y,z)		                 'Moves both the light and the prop. 
+sunName.rotate = (x,y,z)		        'Rotates both the light and the prop. 
+sunName.image = ”url”			        'Applies a texture to the sun’s sphere.  
+sunName.imagerotate = (x,y,z)	        'Rotates the texture.  
+sunName.draw				            'Draws the sun in the scene. 
+
+
+Animations
+Light sources cannot be animated directly.
+To animate a sun, you must attach it to another moving object using either:
+-the glue instruction
+-the attachLight attribute
+
+Example: Sunlight following an animated spherer
+10 sun1.visible=true
+20 sun1.prop.visible=false
+30 sun1.intensity=100
+40 sun1.color=gold
+50 sun1.draw
+60 sphere1.size=1
+70 sphere1.color=white
+80 sphere1.animate=(+8,5,-5) to (-5,0,0) to (-8,5,5) to (0,5,0)
+90 sphere1.attachLight = sun1
+100 sphere1.draw
+
+Faces Label
+The sun object uses the faces label sol1, which allows it to be used with the glue instruction.
+
+Example:
+glue sun1.sol1 to boxCar.b1 = true      'Attaches the sun to the box side b1.  
+
+`,
+            "linear": `**linear** - attribute
+
+linear creates a straight color transition between two or more colors.
+The blend follows a line, making it ideal for smooth gradients, skies, or lighting effects.
+
+linear can be applied to an entire object or to a single surface using objectName.surfaceName.
+
+syntax
+objectName.linear = color1 to color2  
+objectName.linear = hex1 to hex2 to hex3 ...
+objectName.surfaceName.linear = color1 to color2  
+objectName.surfaceName.linear = hex1 to hex2 to hex3 ...
+
+At least two colors are required, but you can use as many as you like. 
+
+example
+10 box1.size=(2,2,2)
+20 box1.linear = red to yellow
+30 box1.draw
+
+`,
+            "var (variables)": `**var** - variables
+
+In 3D Basic, the var prefix is used to create and identify variables that store general data in your program. All variables in 3D Basic are global, meaning both the main program and subroutines can read and modify their values. It is therefore important to give each variable a unique and descriptive name to avoid accidentally overwriting values elsewhere in your program.
+
+
+Variables are used to store, for example:
+-Text strings (such as player names, messages, or file paths)
+-Numeric values (levels, scores, positions, etc.)
+-Boolean values (true/false flags, e.g. if a game is active)
+-Other data types that are not objects or object attributes
+
+
+Syntax: 
+varVariableName = value
+
+Example: 
+10 varCurrentLevel = 1                               ' Starting level
+20 var1 = "Now I'm going to draw a box."             ' Text string
+30 varSize = (3, 3, 3)                               ' Multiple values with parentheses
+40 window1.size = (200, 300,0)
+50 window1.caption = "Level: " + varCurrentLevel
+60 window1.caption = "Say something: " + var1
+70 window1.draw
+80 box1.size = varSize
+90 box1.draw
+
+
+Tip:
+Since all variables are global, avoid reusing the same variable names in different parts of your program.This reduces the risk of unexpected results or overwritten data.
+
+
+Future features:
+Support for local variables using the local instruction is planned for future versions.
+This would allow you to create variables that only exist within a specific subroutine.
+However, this feature is not yet implemented in the language.
+
+`,
+            "fireworks ": `**fireworks** - attribute
+
+Fireworks launch upward and explode.
+Unlike the other effects, loop is used instead of time. 
+
+Syntax:
+particleName.fireworks.intensity = value
+particleName.fireworks.color = color/rnd
+particleName.fireworks.height = value     ' default 10 meters
+particleName.fireworks.speed = value
+particleName.fireworks.move = (x,y,z)
+particleName.fireworks.rotate = (x,y,z)
+particleName.fireworks.loop = count
+particleName.fireworks.type = type
+particleName.fireworks.spread = value     ' default 2.5
+particleName.draw
+
+Firework Types:
+palm
+pistil
+chrysanthemum (flower)
+comet
+
+
+Example: 
+10 background.color=black
+20 particle1.fireworks.intensity = 30000
+30 particle1.fireworks.color = rnd
+40 particle1.fireworks.height = 7
+50 particle1.fireworks.speed = 15
+60 particle1.fireworks.type = pistil
+70 particle1.fireworks.loop = 5
+80 particle1.fireworks.spread = 7
+90 particle1.draw
+
+`,
+            "solid": `**solid** - attribute
+
+The solid attribute controls how penetrable an object is within the 3D environment. Instead of a simple true/false setting, 3D Basic uses a 0 to 100 percent scale, allowing much finer control over how objects affect movement and collisions. 
+
+This is especially useful in games. For example, you typically don’t want players to walk straight through walls, and solid objects should properly block movement. 
+
+Value Description 
+0 – Fully non-solid; the player can move through it freely (like air or water).
+100 – Completely solid; the object fully blocks movement.
+1–99 – Partial resistance. Higher values increase the difficulty of passing through, simulating materials like mud, snow, or dense vegetation.
+
+
+Syntax:
+objectName.solid = value (0-100%)
+
+Default Value 
+0 (non-solid) 
+
+Usage 
+By setting solid to a value such as 50, you can simulate semi-penetrable surfaces—mud, snow, or any material that slows movement without completely stopping it.
+
+In 3D Basic’s FPS mode, you can immediately test how different values behave.
+
+Example – Make a box solid 
+10 box1.size = (2,2,2)
+20 box1.solid = 100            ' The box cannot be passed through
+30 box1.draw
+
+
+`,
+            "font": `**font** - attribute
+
+The font attribute is used to set the typeface of a text object in 3D Basic. You can choose any font installed on the system. Together with fontsize and fontcolor, the font attribute controls how text appears in both 3D scenes and 2D windows. 
+
+
+Syntax
+textName.font = typeface
+textName.fontsize = size
+textName.fontcolor = color
+
+Parameters
+typeface – The name of the font to use
+(examples: Arial, Times New Roman, Courier New, STENCIL)
+size – Text size in points (pt).
+color – The text color, either a named color or a hex code.
+
+
+Example: Text in the 3D world 
+10 text1.caption = "Hello world"
+20 text1.font = STENCIL         ' Font STENCIL
+30 text1.fontsize = 50          ' Text size 50 pt
+40 text1.fontcolor = red        ' Text becomes red
+50 text1.move = (0,3,0)         ' Moves text 3 m upwards
+60 text1.draw
+
+
+Example: Text in a 2D window 
+10 window1.size = (500,300,0)
+20 window1.caption = "Hello world!"
+30 window1.font = Impact
+40 window1.fontsize = 50
+50 window1.fontcolor = red
+60 window1.move = (200,100,0)
+70 window1.draw
+
+
+Tips
+If the chosen font is not installed, a default system font will be used.
+Combining font with edge can improve readability against bright backgrounds.
+Use consistent typefaces to maintain a unified visual style in your game or application.
+
+
+`,
+            "diamond": `**diamond** - attribute
+
+diamond (diamond gradient) produces a square, symmetrical color transition expanding outward like a diamond shape. It gives a geometric, stylized look that’s great for reflections or patterns.
+
+diamond can be applied to entire objects or to individual surfaces using objectName.surfaceName.
+
+syntax
+objectName.diamond = color1 to color2  
+objectName.diamond = hex1 to hex2 to hex3 ...
+objectName.surfaceName.diamond = color1 to color2  
+objectName.surfaceName.diamond = hex1 to hex2 to hex3 ...
+
+
+At least two colors are required, but you can use as many as you like. 
+
+example 
+10 box1.size=(2,2,2)
+20 box1.diamond = red to yellow
+30 box1.draw
+
+
+`,
+            "wood": `**wood** - attribute
+
+The Wood attribute gives an object a wood-like surface with natural grain and a warm tone.
+The higher the value, the stronger the wood effect. It is especially suitable for buildings, furniture, and natural objects.
+
+The wood color is affected by the object's base color. To control the wood tint, a color must be assigned before applying the Wood attribute. If no color is specified, a default natural wood color (“normal” wood tone) is applied automatically.
+
+Wood is procedurally generated (mathematically calculated) and not based on an image file. This means the texture can be scaled without losing resolution.
+
+Syntax 
+objectName.wood = value     			  ' Value in percent (0–100)
+objectName.surfaceName.wood = value
+
+
+Example 1 – Whole object gets a wood texture 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=white       ' sets base color to white
+40 box1.wood=100          ' creates a wood texture
+50 box1.draw
+
+
+Example 2 – Surface b5 gets a warm wood textur 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.color=gold       		 ' sets base color to gold
+40 box1.b5.wood=100       	 ' applies wood texture to surface b5
+50 box1.draw
+
+
+Tips
+If no color is specified, the default wood color is used automatically.
+Always apply color before wood to control the final wood tint.
+Wood can be combined with the Transparent attribute to create transparent wood.
+Higher wood values produce stronger grain and deeper wood appearance.
+
+
+`,
+            "movementSpeed": `**movementSpeed** - attribute
+
+movementSpeed is an attribute that controls how fast a player can move in FPS mode (First Person Shooter).
+
+For convenience, you can also use the shorter form speed, which means exactly the same thing. Both forms are valid and can be used interchangeably depending on your personal coding style. A value of 0.08 represents a normal walking speed. Higher values make the player move faster, lower values make them slower.
+
+Syntax 
+player1.movementSpeed = value
+eller
+player1.speed = value
+
+Example 
+10 player1.mode = fps       ' sets player1 to use FPS mode
+20 player1.speed = 10       ' the player moves extremely fast
+30 player1.draw
+
+
+`,
+            "button": `**button** - attribute
+
+
+The button attribute is used to turn a standard window object into a clickable button.
+You do not create a separate button type — you simply activate button mode on an existing window. 
+
+Syntax
+windowName.button = true
+
+example 
+window1.button = true
+
+This means:
+-The window object is now a button
+-All window properties still work
+-You can now use click events on this object
+A window + button = true = a fully functional button.
+
+
+What features carry over?
+Because the button is still a window, it automatically keeps:
+-size (size)
+-position (move)
+-background color (color)
+-text (caption)
+-font settings
+-image (image)
+-rotation (rotate)
+-animations (animate)
+-z-index ordering
+-and everything else windows can do
+You get full button functionality without creating a new object type.
+
+
+Basic example 
+10 window1.size = (200,100,0)
+20 window1.caption = "Click here"
+30 window1.button = true
+40 window1.draw
+
+
+The window now works as a button.
+Interaction events (click, double click, hover, etc.) are handled through the CLICK attribute.
+
+
+`,
+            "rotationSpeed": `**rotationSpeed** - attribute
+
+The rotationSpeed attribute defines how fast the player rotates while in FPS mode.
+A typical default value is 2. Lower values make turning feel slow, while higher values result in very fast rotations. 
+
+If the value is set too high, the player may miss objects or details in the 3D environment because the turns happen too quickly. 
+
+Syntax:
+playerNumber.rotationSpeed = value
+
+Exampel: 
+10 player1.mode = fps
+20 player1.speed = 0.08
+30 player1.rotationSpeed = 2
+40 player1.draw
+
+`,
+            "click": `**click** - attribute
+
+The click attribute is used to detect mouse actions on a button.
+
+CLICK works only if the window has: 
+windowName.button = true
+
+CLICK contains all mouse-related button events. 
+
+This represents a normal left mouse click. 
+window1.click
+
+
+Available events  
+
+Syntax                                         Meaning 
+windowName.click                               left click 
+windowName.click.down                     mouse button pressed down 
+windowName.click.up                         mouse button released 
+windowName.click.right                      right click 
+windowName.click.double                  double click 
+windowName.click.hover                    mouse hovering over the button 
+
+
+Using CLICK in your code 
+
+Example: left click 
+if window1.click then call start
+
+Example: double click 
+if window1.click.double then call subDouble
+
+Example: hover 
+if window1.click.hover then window1.color = yellow
+
+Example: press and release 
+if window1.click.down then window1.color = red
+if window1.click.up then window1.color = green
+
+Using CLICK inside a loop
+Typically you check for clicks inside a loop:
+
+10 if window1.click then call subDo
+20 goto 10
+
+You can exit the loop by:
+using exit inside a subroutine, or
+jumping to another label with goto.
+
+Summary
+BUTTON turns a window into a button
+CLICK detects how the user interacts with that button
+Together they provide a simple and powerful way to build UI controls using the standard window object.
+
+Code examples to test
+
+-----------------------------------------------------------------------
+
+Example – Yes/No buttons 
+10 window1.caption = "Yes"
+20 window1.button = true
+30 window1.draw
+
+40 window2.caption = "No"
+50 window2.button = true
+60 window2.draw
+
+70 if window1.click then call subYES
+80 if window2.click then call subNO
+90 goto 70
+
+subYES
+window1.color = green
+end sub
+
+subNO
+window2.color = red
+end sub
+------------------------------------------------------------------------
+
+Example – Double click 
+10 window1.caption = "Double-click me!"
+20 window1.button = true
+30 window1.draw
+
+40 if window1.click.double then call subDouble
+50 goto 40
+
+subDouble
+window1.color = yellow
+sleep 2 sec
+window1.color = gray
+end sub
+
+-----------------------------------------------------------------------
+
+Example – Hold down and release 
+10 window1.caption = "Press and release!"
+20 window1.button = true
+30 window1.draw
+
+40 if window1.click.down then window1.color = red
+50 if window1.click.up then window1.color = green
+60 goto 40
+
+-----------------------------------------------------------------------
+
+Example without a subroutine 
+10 window1.size = (200, 100,0)
+20 window1.move = (100, 100, 0)
+30 window1.caption = "Click me!"
+40 window1.button = true
+50 window1.draw
+60 if window1.click then goto labelBLUE
+70 goto 60
+80 labelBLUE
+90 window1.color = royalblue
+100 window1.draw
+
+-----------------------------------------------------------------------
+
+
+Tips
+To exit a loop after a click, use exit inside a subroutine or jump to a new label.
+All window animations and effects work on buttons too.
+
+`,
+            "rotate": `**rotate** - attribute
+
+The rotate attribute is used to rotate objects in 3D Basic. Every object can be rotated freely around the x, y, and z axes, giving you full control over its orientation in the 3D space.
+All rotation values are specified in degrees. 
+
+Syntax
+objectName.rotate = (x, y, z)
+
+x — rotation around the x-axis
+y — rotation around the y-axis
+z — rotation around the z-axis
+
+Example 
+10 box1.size = (2,2,2)
+20 box1.move = (0,3,0)
+30 box1.rotate = (0, 90, 0)   ' Rotera 90° runt y-axeln
+40 box1.draw
+
+
+`,
+            "clear": `**clear** - instruction
+
+The CLEAR instruction is used to remove or reset different parts of the program during execution. 
+
+With CLEAR, you can close windows, remove objects, clear memory, or restore settings to their default values. 
+
+What is cleared depends on the argument specified inside the parentheses. 
+
+Syntax 
+clear(target)
+-target specifies what should be cleared or reset. 
+
+
+
+  
+-----------Usage 
+
+clear(print) ------------ 
+-Closes the print (output) window. 
+
+clear(all) ------------ 
+-Clears everything and restores the program to its default state.
+-All objects are removed, memory is cleared, and all settings are reset.
+
+clear(memory) ------------ 
+-Clears only the memory (variables, states, etc.).
+-Objects that are already created remain visible on the screen. 
+
+clear(objectName) ------------ 
+-Removes a single object from the scene. 
+Example: 
+clear(box1)
+
+clear(objectName.attribute) ------------ 
+-Resets a specific attribute of an object to its default value. 
+Example: 
+If an object has been made invisible using 
+box1.visible = false
+
+it can be restored with: 
+clear(box1.visible)
+- This resets visible to its default value (true). 
+
+⚠️Note:
+Works with most attributes
+The size attribute cannot be reset using clear
+
+clear(editor) ------------ 
+-Closes the programming environment (editor). 
+-To return to the editor, press ESC. 
+
+Summary
+The CLEAR instruction is a powerful tool for controlling the program state.
+It can be used both for complete resets and for precise cleanup, such as removing individual objects or restoring specific attributes.
+
+`,
+            "calc.date": `**calc.date** - math
+
+What does calc.date do?
+The command calc.date(...) = ... is used to calculate and manage dates in 3D Basic.
+It allows you to compute the year, month, and day from a given start date — and move time forward, backward, or at a custom speed. 
+
+Syntax 
+calc.date(yyyy.mm.dd, value) = varYear, varMonth, varDay
+
+
+Note:
+Dots (.) must always be used between year, month, and day, and a comma (,) must appear before the value. This might look like a typo, but it’s completely correct and required for the code to work properly. 
+
+Parameters
+yyyy.mm.dd – The start date.
+value – The time progression speed.
+0 → Normal time (no change)
+1 → One step forward (one day per update)
+-1 → One step backward (one day per update)
+Larger values increase the speed. For example, 1000 = 1001 days per day.
+The value can be a fixed number or a variable.
+varYear, varMonth, varDay – Variables that receive the calculated year, month, and day.
+Note: All variables in 3D Basic must begin with the prefix var.
+
+
+
+Example 1 – Use a variable for speed 
+10 for varX=0 to 5
+20 varDateSpeed = 7
+30 calc.date(1985.05.10, varDateSpeed) = varYear, varMonth, varDay
+30 print varYear + "-" + varMonth + "-" + varDay
+40 next varX
+
+
+Example 2 – Fixed values  
+calc.date(1985.05.10, 0)  = varYear, varMonth, varDay   ' Normal time
+calc.date(1985.05.10, 1)  = varYear, varMonth, varDay   ' One day forward
+calc.date(1985.05.10, -1) = varYear, varMonth, varDay   ' One day backward
+
+
+Example 3 – Display year 2025
+10 calc.date(1985.05.10, 0) = varYear, varMonth, varDay
+20 varY = varYear + 40
+30 print varY                   
+
+Example 4 – Display month and day  05/10
+10 calc.date(1985.05.10, 0) = varYear, varMonth, varDay
+20 print varMonth + "/" + varDay      
+
+
+Example 5 – Extreme speed 
+10 for varX=1 to 5
+20 calc.date(1985.05.10, 1000) = varYear, varMonth, varDay
+30 print varYear + "-" + varMonth + "-" + varDay
+40 next varX
+
+In this case, time progresses 1001 days per real day, which can be used for effects such as time-lapse. 
+
+Using today’s date
+To start from the current date, use the keyword today:
+10 calc.date(today, 0) = varYear, varMonth, varDay
+
+
+When and why to use calc.date
+To create dynamic date fields that update in real time.
+To simulate time travel or alternate timelines.
+To build time-lapse effects where time rapidly advances.
+To handle date logic in games, animations, or simulations.
+
+Tips
+All variables must start with var for the code to work correctly.
+Use a variable for speed if you want to adjust time progression dynamically.
+Combine calc.date with calc.clock to create synchronized date and time systems.
+
+
+`,
+            "star": `**star** - object
+
+A star object creates a star-shaped figure that can be either flat (2D) or thick (3D) in 3D Basic. 
+
+Syntax:
+objectName.size = (outerRadius, innerRadius, numberOfPoints, thickness)
+
+outerRadius — Distance from the star’s center to the tips of the points.
+innerRadius — Distance from the center to the “valleys” between the points, specified in meters.
+numberOfPoints — The number of points on the star (minimum 3).
+thickness — Thickness or height along the Z-axis, specified in meters.
+If thickness = 0, a flat 2D star is drawn in the XY-plane.
+If thickness > 0, a 3D star with volume is created, extruded along the Z-axis. 
+
+Example: 
+10 star1.size = (5, 2, 7, 0)      ' Flat 2D star with 7 points
+20 star1.move = (5, 5, 0)
+30 star2.size = (0.5, 4, 9, 2)    ' Thick 3D star with 9 points
+40 star2.move = (-5, 5, 5)
+50 star1.radial = gold to white
+60 star2.color = princeton
+70 render
+
+Important Tips:
+innerRadius should be smaller than outerRadius to form a proper star shape.
+numberOfPoints must be an integer ≥ 3.
+thickness = 0 creates a flat 2D shape in the XY-plane.
+thickness > 0 extrudes the star and gives it volume along the Z-axis.
+The star’s orientation and position can be freely adjusted in 3D space using standard transformation attributes (e.g., rotate, move, etc.).
+
+
+
+`,
+            "window": `**window** - objects
+
+The window object is used to create 2D windows inside the viewport, independent of the 3D environment. It’s perfect for menus, status bars, dialog boxes, HUD elements, and other 2D interfaces that appear on top of the game or application. 
+
+
+Note:
+Unlike other objects in 3D Basic (e.g., box, sphere, stage), both the window size and text size are measured in pixels. This makes it easier to create clear, pixel-perfect UI elements, while the rest of the language still uses meters.
+
+Syntax:
+objectName.size = (width, height,z-bitplane)   ' Size in PIXELS 
+objectName.caption = "Text"                   ' Caption or content
+objectName.color = hex/color              	 ' Background color
+objectName.move = (x, y, z)                	 ' Moves the window and all its elements
+objectName.visible = true/false           	 ' Controls visibility
+objectName.input = "Question" + varName    ' Text input, stored in variable
+
+objectName.font = "FontName"               	' (optional) e.g. "Arial"
+objectName.fontsize = size                 		' Font size in PIXELS
+objectName.fontcolor = hex/color           	' Font color
+
+objectName.edge = true/false              	 ' Window border on/off
+objectName.edgesize = size                		 ' Border thickness in PIXELS
+objectName.edgecolor = hex/color          	 ' Border color
+
+objectName.image = "URL/name"             ' Background or icon image
+objectName.imagerotate = degrees           ' Rotates only the image inside the window
+
+
+Animations 
+Window objects can be animated in various ways.
+All 2D animations use pixels for movement and size (unlike 3D animations, which use meters). 
+
+
+Syntax:
+objectName.animate = "(x1,y1,z1) to (x2,y2,z2) [to ...]"   ' Position in PIXELS
+objectName.animate.size = "(w1,h1) to (w2,h2) [to ...]"   ' Size in PIXELS
+objectName.animate.transparent = "0 to 100 [to ...]"        ' Transparency 0–100%
+objectName.animate.time = seconds                                    ' Animation duration
+objectName.animate.loop = true/false/-1/number             ' Loop behavior
+objectName.animate.rotate = (x1, y1, z1)-(x2, y2, z2)   ' Rotates the window
+
+
+Example: 
+10 window1.animate = (0,100,0) to (300,100,0)
+20 window1.animate.time = 2
+30 window1.animate.loop = 2
+40 window1.draw
+
+
+Element placement inside windows
+In 3D Basic, all window elements are automatically placed from top to bottom in the order they are defined in the code. This means you don’t need to manually set y-coordinates for captions, inputs, or other elements — they stack in the same order you write them.
+
+Example:
+10 window1.size = (300, 150,0)                     	' Window size in PIXELS
+20 window1.caption = "Login"                     	' Caption at the top
+30 window1.color = gray                          	' Background color
+40 window1.move = (50, 100, 0)                 ' Moves the window and all its elements
+50 window1.font = "Arial"                        	' Font
+60 window1.fontsize = 16                         	' Font size in PIXELS
+70 window1.fontcolor = blue                      	' Font color
+80 window1.input = "What is your name? " + varName
+90 window1.caption = "My name is: " + varName
+
+100 window1.image = "grass"                       ' Background image
+110 window1.imagerotate = 45                     ' Rotates only the image 45 degrees
+
+120 window1.rotate = (0, 0, 15)                  	' Rotates the entire window 15 degrees
+130 window1.animate.rotate = (0,0,0)-(0,0,360)   ' Animates full rotation
+
+140 window1.draw         ' Draws the window and all elements
+
+
+Tips
+Only window uses pixels — everything else in the language uses meters.
+By changing the code order, you control the vertical placement of elements.
+window.move() moves the entire window and all elements within it.
+Want to hide a window? → window1.visible = false
+You can animate position, size, transparency, and rotation with window.animate.
+imagerotate only affects the image — use window.rotate for the entire window.
+Even though window.move() uses 2D coordinates for placement, the z-parameter still affects the depth in the view (viewport).
+
+Bonus to consider
+With z-index you can stack different windows on top of each other or partially overlap them. You can also animate the z-value to create effects where windows slide over or under each other.
+
+
+
+
+
+
+Caption – alignment and row offset 
+
+By default, caption text is left-aligned and placed on the next available row inside the window. Additional caption attributes let you control horizontal alignment and vertical row offset. 
+
+
+Horizontal alignment 
+Syntax:
+windowName.caption = "text"          ' left (default)
+windowName.caption.center = "text"   ' centered
+windowName.caption.right = "text"    ' right-aligned
+
+Example: 
+10 window1.caption = "Hello"          ' default – left
+20 window1.caption.center = "Hello"  ' text centered in the window
+30 window1.caption.right = "Hello"   ' text aligned to the right
+
+
+
+
+Vertical caption offset 
+Caption text can be moved up or down by rows relative to its normal position.
+This is useful for adding spacing, fine-tuning layout, or visually adjusting headings. 
+
+Syntax:
+windowName.caption.up = value
+windowName.caption.down = value
+
+value = number of rows
+The offset affects the most recently defined caption
+
+
+Example – move text downward: 
+10 window1.caption = "Hello"
+20 window1.caption.down = 2   ' moves the text down two rows
+
+Example – centered text moved upward: 
+10 window1.caption.center = "Hello"
+20 window1.caption.up = 2     ' moves the text up two rows
+
+
+
+Important notes
+caption.up and caption.down affect position only, not element order.
+Offsets are measured in rows, not pixels.
+Alignment (center, right) and offset (up, down) can be combined.
+
+
+
+Window type (shape)
+The type attribute changes the visual shape of a window object.
+If no type is specified, the window uses the default rectangular window style.
+
+Syntax:
+windowName.type = shape
+
+Available shapes:
+round – rounded window
+speech – speech bubble
+thought – thought bubble
+burst – explosive, expressive speech bubble
+
+Example 
+10 window1.size = (400, 200, 0)
+20 window1.type = speech      ' window becomes a speech bubble
+30 window1.draw
+
+
+Shape descriptions
+
+-round
+A rounded window shape.
+Useful for soft UI elements, dialogs, or modern interface design.
+-speech
+A classic speech bubble.
+Ideal for dialogue, character speech, or tutorial messages.
+-thought
+A thought bubble style.
+Often used to represent inner thoughts, hints, or ideas.
+-burst
+An explosive, high-energy speech bubble.
+Suitable for emotions, alerts, exclamations, or comic-style effects.
+
+
+Notes
+window.type affects appearance only, not size or behavior.
+The window size is still controlled by window.size.
+type can be combined with all other window attributes
+(color, caption, animation, rotation, transparency, etc.).
+
+
+
+`,
+            "thickness": `**thickness** - attribute
+
+The thickness attribute is used to create the illusion of depth by stacking multiple copies of the same two-dimensional object behind each other. This technique is primarily used for text but also works with flat polygons.
+
+By drawing the object repeatedly in a vertical “stack,” where the number of layers corresponds to the thickness value, the object appears three-dimensional—even though every layer is actually 2D. 
+
+Syntax:
+textName.thickness = value
+textName.draw
+
+value = thickness in meters (integer or decimal). 
+
+Example: 3D-style text 
+10 text1.caption = "Hello world"
+20 text1.fontsize = 24
+30 text1.thickness = 1       	 ' Creates the illusion of 1 meter thickness
+40 text1.draw               		 ' Draws the fake 3D text in the scene
+
+
+Tips:
+The illusion works best when combined with lighting and shadows.
+Small values (e.g. 0.1) create subtle depth, while larger values give blocky letters.
+Very high thickness values may impact performance since many layers are drawn.
+
+Using thickness with polygons
+The thickness attribute can also be applied to flat polygons to “extrude” them into 3D shapes.
+
+Example: 
+10 polygon1.size = (0, 0, 0) to (5, 0, 0) to (5, 5, 0) to (0, 5, 0)
+20 polygon1.color = gold
+30 polygon1.thickness = 5
+40 polygon1.draw
+
+
+
+`,
+            "text": `**text* - object
+
+A text is a two-dimensional text object placed in the 3D space.
+It is used to display words or sentences in the scene, similar to print in classic Basic, but now with spatial positioning.
+
+Since text is flat (2D), its placement and rotation can make it difficult to see unless carefully oriented in relation to the camera. With the thickness attribute, text can also be transformed into a three-dimensional object, turning the letters into 3D shapes.
+
+
+Syntax: 
+objectName.caption = "text content"
+objectName.move = (x, y, z)
+objectName.fontcolor = color
+objectName.font = fontname
+objectName.fontsize = size
+objectName.rotate = (x, y, z)
+
+objectName.animate = (x1, y1, z1) to (x2, y2, z2)
+objectName.animate.orbit = (radius, x, y, z, forward/reverse)
+objectName.animate.rotate = (x1, y1, z1) to (x2, y2, z2)   ' rotation in degrees
+objectName.animate.loop = true/false
+objectName.animate.time = time
+objectName.animate.speed = speed
+
+objectName.edge = true/false
+objectName.edgecolor = color
+objectName.edgesize = thickness
+objectName.thickness = value (meters)
+objectName.draw
+
+
+
+Exampel: 
+10 text1.caption = "Hello World"              	 ' Displays "Hello World"
+20 text1.fontcolor = red                       	 ' Text becomes red
+30 text1.move = (0, 5, -10)                   	 ' Places the text in the 3D scene
+40 text1.font = Arial                         		 ' Selects Arial font
+50 text1.fontsize = 24                        		 ' Font size 24
+60 text1.rotate = (0, 180, 0)                  ' Rotates text backwards (facing the camera)
+
+70 text1.animate = (0, 5, -10) to (0, 8, -10)  ' Moves the text upward
+80 text1.animate.orbit = (10, 0, 0, 0, forward) ' Orbits around a point with radius 10
+90 text1.animate.rotate = (0,0,0) to (0,360,0) ' text fully around the Y-axis
+100 text1.animate.loop = true                  ' All animations repeat in an infinite loop
+110 text1.animate.time = 3 sec                 ' Animation lasts 3 seconds
+
+120 text1.edge = true                          	' Enables outline
+130 text1.edgecolor = black                   	' Outline color is black
+140 text1.edgesize = 2                         	' Outline thickness is 2 units
+
+150 text1.thickness = 1                         ' Turns the text into 3D, 1 meter thick
+160 text1.draw                               	  ' Renders the 3D text
+
+
+Tips:
+Always make sure the text is facing the camera for best readability.
+animate.orbit makes the text move in a circular path around a point in space – useful for rotating headlines.
+animate.rotate makes the text spin around its own axis.
+Combine orbit and rotate for advanced movement effects.
+With thickness, the text becomes a 3D object and interacts with light and shadows like other shapes.
+
+
+
+`,
+            "roundness": `**roundness** - attribute
+
+The roundness attribute controls how rounded the corners of an object are, allowing you to create everything from sharp-edged boxes to smooth, almost spherical shapes.
+
+Note:
+roundness is exclusive to the box object and cannot be used with other object types.
+When roundness is applied to a box, the faces system with labels (such as box1.front, box1.top, etc.) will not work.
+You can still use other attributes, but they will apply to the entire box, not to individual faces.
+
+Syntax:
+objectName.roundness = percent
+
+
+Argument:
+percent – A value between 0 and 100.
+0% produces sharp corners (default).
+100% makes the box so rounded that it becomes almost spherical.
+
+
+Example: 
+10 box1.size = (3, 3, 3)
+20 box1.roundness = 50    ' Gives the box a softly rounded shape
+30 box1.draw
+
+`,
+            "deform": `**deform** - attribute
+
+The deform attribute is used to deform (stretch or tilt) an object in a specific direction.
+You define a starting point in the object’s shape and how far the object should deform along the x, y, and z axes.
+
+This affects the shape of the object, not its position in 3D space.
+- Movement in 3D space is always handled by the move attribute.
+
+Syntax 
+objectName.deform = (x1, y1, z1) to (x2, y2, z2)
+
+
+Explanation
+    (x1, y1, z1)
+    The starting point in the object’s shape where the deformation begins.
+    This is not a spatial position.
+
+    (x2, y2, z2)
+    Defines how far the object should deform along the x, y, and z axes from the start point.
+
+The deformation is applied relative to the object’s own geometry, not its position in the scene.
+
+
+Example – tilted yellow cube with a red face and black edges 
+10 box1.size = (2,2,2)
+20 box1.color = yellow
+30 box1.b1.color = red
+40 box1.move = (0,1,0)
+50 box1.deform = (2,2,2) to (2,2,3)   ' tilts one meter along the z-axis
+60 box1.edge = true
+70 box1.draw
+In this example, the cube is deformed so that it tilts along the z-axis, creating a slanted shape. 
+
+
+Tips
+deform can be a bit tricky to get exactly right.
+The result depends on which object is being deformed and its geometry.
+Some trial and error is often needed to achieve the desired effect.
+
+`,
+
+            "for": `**for** - instruction
+
+- instruction  (loop)
+The FOR instruction is used to repeat a block of code a fixed number of times.
+When the loop starts, a counter variable is created. This variable automatically changes its value for each loop iteration. 
+
+FOR loops are especially useful for animations, step-by-step changes, and counting operations.
+The loop runs from a start value to a stop value and ends with NEXT.
+
+Syntax 
+FOR variable = start TO stop
+    instructions
+NEXT variable
+
+variable – the counter that changes each loop
+start – the value where the loop begins
+stop – the value where the loop ends
+NEXT – marks the end of the loop
+
+
+
+Example 1 – Change size and move an object 
+In this example, a small box gradually grows while being moved upward in the scene. 
+10 for varI = 1 TO 5
+20 box1.size = (varI+1, varI, varI*2)
+30 box1.move = (0, varI+1, 0)
+40 box1.draw
+50 next varI
+
+Explanation:
+The loop runs 5 times
+varI increases by 1 each iteration
+The box’s size and position depend on the current value of varI
+The result is a simple animation
+
+
+Example 2 – Counting and speaking 
+This example counts from 1 to 5, prints the number, and speaks it out loud. 
+10 for  varC = 1 TO 5
+20 print varC
+30 say = "number " + varC
+40 next varC
+
+Result:
+The program counts aloud to 5. 
+
+Summary
+FOR is used to repeat code a specific number of times
+The counter variable updates automatically
+Ideal for animations, counting, and step-by-step changes
+
+`,
+            "tube": `**tube** - object
+
+The TUBE object looks like a hollow pipe, but is actually made of two tightly connected cylinders – an inner and an outer one.
+
+You specify the outer radius and the height. The inner tube is automatically generated with a slightly smaller radius to create the illusion of a hollow shape.
+The two tubes are fixed together and cannot be resized or separated.
+If you want a visible tube inside another, you need to create a new tube object.
+
+Each tube can have its own color, texture, or material using tu1 (outer tube) and tu2 (inner tube).
+
+Syntax:
+objectName.size = (outerRadius, height)
+
+Example: 
+10 tube1.size = (3, 7)              ' Creates a tube with outer radius 3 and height 7
+20 tube1.tu1.color = red          ' Sets color of the outer tube
+30 tube1.tu2.color = blue        ' Sets color of the inner tube
+40 tube1.draw                          ' Draws the object
+
+
+`,
+            "and": `**and** - logical operator  / instruction
+
+AND is a logical operator used in conditions to combine two or more expressions.
+In 3D Basic, the entire condition evaluates to true only if all conditions are true.
+If any condition is false, the instruction after THEN is not executed.
+
+Basic syntax 
+IF <condition1> AND <condition2> THEN <instruction>
+
+
+How it works
+If all conditions are true → the instruction after THEN is executed
+If any condition is false → nothing happens and the program continues
+
+
+Example 
+10 varX=1
+20 varY=2   ' change this value to get different results
+
+30 if varX=1 and varY=2 then call subbox   ' draws a box
+40 if varX=1 and varY=3 then goto 60       ' draws no box
+
+60 print "x=1 and y=3"
+70 print "test run completed"
+
+
+subbox
+box1.size=(2,2,2)
+box1.move=(0,1,0)
+box1.draw
+print "x=1 och y=2"
+goto 70
+
+
+Explanation
+Line 30: Both conditions are true → the subbox routine is called and a box is drawn
+Line 40: One condition is false → no box is drawn
+By changing the value of varY, you can test different outcomes
+
+
+`,
+            "next": `**next** - instruction
+
+The instruction NEXT marks the end of a FOR loop.
+When the program reaches NEXT, the counter variable is automatically increased (or decreased) and execution jumps back to the start of the FOR loop.
+
+If the counter variable has not yet reached its stop value, the loop runs again.
+When the stop value is reached, the loop ends and the program continues with the line after NEXT.
+
+
+Syntax 
+NEXT variable
+
+- variable – the same counter variable used in the corresponding FOR instruction
+NOTE: The variable in NEXT must match the variable used in FOR
+
+Example – Simple loop 
+10 for varI = 1 TO 3
+20 print varI
+30 next varI
+40 print "Done"
+
+Explanation:
+The program prints 1, 2, and 3
+When i reaches the value 3, the loop ends
+Execution then continues after NEXT
+
+
+Common mistakes 
+Missing NEXT → the loop does not end correctly
+Wrong variable in NEXT → the loop behaves incorrectl
+
+
+Summary 
+NEXT ends a FOR loop
+Automatically updates the counter variable
+Decides whether the loop repeats or exits
+
+`,
+            "tree": `**tree** - object
+
+The tree object in 3D Basic allows you to create everything from simple tree trunks to highly realistic trees with complex branch structures. Note that the object does not include separate leaves, but at higher complexity values, the branches can appear almost leaf-like. 
+
+Syntax 
+treeName.size = (valueHeight, valueRadius, valueTrunkThickness, valueComplexity)
+
+Parameters
+Parameter               Description
+valueHeight             Total height of the tree (in meters)
+valueRadius             Maximum spread of the branches from the center to the outermost tips (in meters)
+valueTrunkThickness    Thickest part of the tree trunk (in meters)
+valueComplexity          How complex the branch structure is (0–300). 0 = only trunk, 
+                                     100 = dense branches, 300 = extreme realism
+
+Note: valueComplexity over 150 may affect animations and performance. Trees with high values (200–300) can be extremely realistic but are recommended to remain stationary to avoid animation issues. 
+
+Example 1 – simple tree 
+10 tree1.size = (5, 2, 0.5, 70)
+20 tree1.draw
+
+Example 2 – complex tree with wood detail 
+10 tree1.size = (7, 3, 1, 200)
+20 tree1.wood = 100
+30 tree1.draw
+
+Additional Features
+Trees can be animated like other objects.
+You can apply colors, gradients, or make trees transparent.
+Each tree is generated with a random factor, so even two trees with the exact same parameters will never look identical, creating natural variation and realism in your scene.
+
+
+
+`,
+            "semi": `**semi** - object
+
+Semi is a unique object in 3D Basic capable of transforming into four different shapes depending on the Y-size value provided. It can be drawn in both 2D and 3D. 
+
+Available shapes: 
+
+Y-value                                 Shape (if Z > 0)
+Y = 0                                   Half circle (2D or 3D if Z > 0)
+Y > 0                                   Gravestone shape
+-1.4 ≤ Y < 0                            Trough shape
+Y ≤ -1.5                                Halfpipe
+
+Currently, Semi does not support the 3D Basic surface system, but all other object properties work normally — such as color, move, rotate, and animate. 
+
+Syntax 
+SemiName.size = (x, y, z)
+
+If Z = 0, Semi is always 2D in the 3D world.
+X controls width, Y determines shape, Z controls depth.
+
+Exemple 1 — Halfpipe 
+10 semi1.size = (3, -1.5, 3)
+20 semi1.draw
+
+Exemple 2 — Gravestone 
+10 semi1.size = (2, 2, 0.5)
+20 semi1.draw
+
+Exemple 3 — 3D Half Circle 
+10 semi1.size = (3, 0, 3)
+20 semi1.draw
+
+Exemple 4 — Trough Shape 
+10 semi1.size = (3, -1, 3)
+20 semi1.draw
+
+Tips
+Objects may occasionally start rendering below the origin grid.
+Move them upward if needed:  semi1.move = (0, 2, 0) 
+
+
+`,
+            "cylinder": `**cylinder** - object
+
+The cylinder object is a three-dimensional cylinder.
+The size is specified using radius and height directly in meters.
+
+In 3D Basic, cylinders can be used for more than just 3D objects. By making the height very small, you can create flat circles or outlines, effectively replacing the removed circle function. If you want to display only the edge of a circle, make the cylinder transparent and set edge = true.
+
+
+Syntax: 
+objectName.size = (radius, height)
+
+Parameters:
+radius – the cylinder's radius (meters)
+height – the cylinder's height (meters)
+
+
+Example: A regular cylinder 
+cylinder1.size = (2, 5)     ' A cylinder with radius 2 m and height 5 m
+cylinder1.color = blue
+cylinder1.move = (0, 0, 0)
+cylinder1.draw
+
+Example: Create an object that looks like an unfilled circle  
+cylinder1.size = (3, 0.01)   ' Very thin cylinder
+cylinder1.edge = true         ' Show only the edge
+cylinder1.transparent = 100   ' Fully transparent
+cylinder1.draw
+
+Example: Create an object that looks like a filled circl 
+cylinder1.size = (3, 0.01)   ' Very thin cylinder
+cylinder1.edge = true         ' Show edge for subtle effect
+cylinder1.draw
+
+
+`,
+            "cone": `**cone** - object
+
+The cone object creates a three-dimensional cone with a circular base and a pointed top.
+You define the base radius and the cone’s height.
+All measurements are given in meters.
+
+Syntax:
+objectName.size = (radius, height)
+
+Parameters:
+radius – the radius of the base in meters.
+height – the height of the cone in meters (from base to tip).
+
+Faces and labels:
+The cone’s faces follow the label system:
+co1 is the base plate.
+co2 is the sloped side surface.
+Each face can be modified individually using properties such as .color, .visible, or .texture.
+
+Example:
+10 cone1.size = (2, 5)             ' A cone with a base radius of 2 m and a height of 5 m
+20 cone1.co2.color = blue  ' Colors the side surface blue, leaving the base unchanged
+30 cone1.draw
+
+
+Tips:
+Use .co1.visible = false to hide the base and create an open cone shape.
+Combine multiple cones to create towers, spikes, or lamp-like structures.
+Apply .texture to create metallic or transparent cone materials.
+Use .move and .rotate to position and orient the cone precisely in your scene.
+
+`,
+            "notes": `**notes** - Render instruction
+
+The notes attribute is used to specify a sequence of musical notes for a sound object to play.
+A note can consist of up to three parts:
+
+Part        Description                                                                       Example             Default if omitted
+Octave      o followed by a number sets the octave.                       o3 = octave 3       Default octave
+Pitch        Letter a–g. Can be modified with # (sharp) or b (flat).      c, f#, eb                 Required
+Length     Note value: 1 = whole note 2 = half note 4 = quarter 
+                note 8 = eighth note                                                          g4, d8                 Whole note (1)
+
+Syntax:
+soundName.notes = "notes"
+
+Example 1 (without octave): 
+10 sound1.sinesynth = 80
+20 sound1.notes = "c d e2 f#4 g# eb8"
+30 sound1.play
+
+This plays:
+C (whole note, default octave)
+D (whole note, default octave)
+E (half note, default octave)
+F# (quarter note, default octave)
+G# (whole note, default octave)
+Eb (eighth note, default octave)
+
+Example 2 (with octaves):
+10 sound1.squaresynth = 100
+20 sound1.notes = "o1c8 o2d o3g4"
+30 sound1.play
+
+This plays:
+C in octave 1 (eighth note)
+D in octave 2 (whole note)
+G in octave 3 (quarter note)
+
+Tips:
+Build notes by combining octave + pitch + length as needed.
+If you skip the octave, the default octave is used.
+If you skip the length, the note is treated as a whole note.
+Notes are always played in the order you write them.
+Combine with different synth types (sinesynth, squaresynth, etc.) for varied sound character.
+Use .loop to repeat the melody multiple times.
+
+`,
+            "adsr": `**adsr** - attribute
+
+The adsr attribute is used to shape the character of a sound over time within a sound object.
+It controls how a tone builds up, holds, and fades out through four parameters:
+
+1. Attack – how quickly the sound rises from silence to full strength.
+2. Decay – how quickly the sound drops to the sustain level after the attack.
+3. Sustain – the level at which the sound is maintained while the note is held.
+4. Release – how quickly the sound fades out after the note is released.
+Values are given in percent (0–100) and represent relative time spans and levels.
+By adjusting these parameters, you can create anything from soft, slowly building sounds to short, percussive tones.
+
+
+Syntax:
+soundName.adsr = attack, decay, sustain, release
+
+attack – time to reach full volume (0–100)
+decay – time to drop down to sustain level (0–100)
+sustain – level to hold (0–100)
+release – time to fade out (0–100)
+
+
+
+Example 1 – soft synth sound: 
+10 sound1.squaresynth = 80
+20 sound1.adsr = 0,40,20,70
+30 sound1.notes = "c d e f g"
+40 render
+
+Example 2 – short percussive tones: 
+10 sound2.sawtoothsynth = 80
+20 sound2.adsr = 0,15,0,10
+30 sound2.notes = "c4 c4 c4 c4 c4 c4 c4 c4 c4 c4"
+40 sound2.volume = 100
+50 render
+
+
+Tips:
+Combine adsr with different waveforms (squaresynth, sawtoothsynth, trianglesynth, etc.) to create unique sounds.
+A high sustain value works well for long, sustained tones (e.g., strings or pads).
+A low sustain with a short release produces more percussive effects.
+`,
+            "blur": `**blur** - attribute
+
+The blur attribute is used to blur an object. The effect gives a soft, out-of-focus appearance – as if the object is covered in fog or viewed through frosted glass.
+blur can only be used if the object has a texture applied via the image attribute. 
+
+Syntax:
+objectName.blur = value
+
+value defines the amount of blur (1–100).
+Lower values create a subtle softness, while higher values produce a strong foggy 
+or glowing look. 
+
+Example 1 – A blurry box using the crate texture  
+10 box1.size=(2,2,2)
+20 box1.color=white
+30 box1.image="https://threejs.org/examples/textures/crate.gif"
+40 box1.blur=50
+50 box1.draw
+
+Example 2 – A sphere with glowing lava and heavily blurred texture edges 
+sphere1.size=2
+sphere1.color=gold
+sphere1.image="lava"
+sphere1.blur=80
+sphere1.draw
+
+`,
+            "video": `**video** - attribute
+
+The video attribute allows you to play video files on objects, on specific object surfaces, and on the background.
+Child objects can also display video, but the video will always cover the entire child object, since the surface system does not apply to children.
+For best compatibility, it is recommended to use mp4 files.
+
+Syntax
+objectName.video = "URL"
+objectName.SurfaceName.video = "URL"
+background.video = "URL"
+
+
+Example 1 – Video on the entire object (infinite loop) 
+10 box1.size = (2,2,2)
+20 box1.video = "sky.mp4"
+30 box1.draw
+
+Example 2 – Video on a specific surface (b1) 
+10 box1.size = (2,2,2)
+20 box1.b1.video = "URL"
+30 box1.draw
+
+By default, videos play in an infinite loop.
+If you want the video to play a specific number of times, use .video.loop. 
+
+Example 3 – Loop the video 4 times on the object 
+10 box1.size = (2,2,2)
+20 box1.video = "sky.mp4"
+30 box1.video.loop = 4
+40 box1.draw
+
+Example 4 – Loop the background video 5 times 
+10 background.video = "URL"
+20 background.video.loop = 5
+
+`,
+            "shake": `**shake** - attribute
+
+The shake attribute makes an object vibrate or shake for a set duration.
+The shaking motion is controlled by three parts: amplitude, speed, and time.
+
+⚠️
+Important: For shaking to work, both shake.speed and shake.time must be defined in the program.If either one is missing, no shaking will occur.
+
+
+Syntax:
+objectName.shake = (x, y, z)
+objectName.shake.speed = value
+objectName.shake.time = value
+
+
+Explanation:
+shake = (x, y, z)
+Defines how far the object can move in each direction (in meters).
+(x, y, z) represents the amplitude along the X, Y, and Z axes.
+shake.speed
+Controls how fast the shaking occurs (number of movements per second or unitless value).
+shake.time
+Sets how long the shaking lasts (in seconds or with a time unit, e.g. 3sec, 2min).
+
+
+Exempel:
+5 box1.size = (10, 10, 10)          ' Creates a box 10x10x10 meters
+10 box1.shake = (0.05, 0, 0)      ' Shakes 5 cm along the X-axis
+20 box1.shake.speed = 10
+30 box1.shake.time = 2               ' Shakes for 2 seconds
+40 box1.draw
+
+
+`,
+            "orbit": `**orbit** - attribute
+
+The orbit attribute is used to animate an object in a circular path around its placement point (set by .move).
+orbit makes it easy to create orbital motion without manually specifying multiple points along a path. 
+
+Syntax:
+objectName.animate.orbit = (radius, degreesX, degreesY, degreesZ, direction)
+
+Parameters:
+radius – The radius of the orbital path (in meters).
+degreesX, degreesY, degreesZ – The orientation in degrees, specifying in which plane the orbit occurs (similar to .rotate).
+direction – Controls the orbit direction:
+forward or 1 = clockwise
+reverse or 0 = counterclockwise
+
+
+Example 1 – Orbit in the YZ plane (forward): 
+10 box1.move = (0,0,0)  
+20 box1.animate.orbit = (5,0,90,0,forward)  
+30 box1.animate.time = 6 sec  
+40 box1.animate.loop = true  
+50 box1.draw
+
+Example 2 – Tilted orbit in an angled plane (reverse): 
+10 sphere1.move = (0,0,0)  
+20 sphere1.animate.orbit = (8,45,45,0,0)  ' Same as reverse 
+30 sphere1.animate.time = 12 sec  
+40 sphere1.draw
+
+Tips:
+.move always defines the center of the orbit.
+Combine .orbit with .loop, .time, or .speed to control motion speed and repetition.
+You can use either text (forward, reverse) or numeric values (1, 0) for the direction.
+
+`,
+            "glue": `**glue** - instruction
+
+The glue instruction is used to connect two objects through specific surfaces.
+When glue is active, the objects follow each other during animations but are not affected by regular move or rotate attributes.
+This makes it easy to build complex structures — such as cars, spaceships, or robots — where all parts automatically move together during animation. 
+
+Syntax: 
+glue objectName.surfaceName to objectName.surfaceName = true/false
+
+Notes:
+By default, no objects are glued together.
+true activates the connection, while false disables it (without deleting it).
+glue only works during animations (.animate).
+If an object is moved or rotated manually using move or rotate, the other object is not affected.
+The connection is mutual: when one object is animated, the other automatically follows — and vice versa.
+The connected surfaces do not need to be physically touching; glue works at any distance as long as the link is defined in the code.
+
+
+Example: Surface b1 on box1 is glued to surface b1 on box2: 
+10 glue box1.b1 to box2.b1 = true     
+
+Conflicts and Priority
+3D Basic always reads code from top to bottom. This means:
+All glue instructions written before the first draw or render call are collected and activated immediately.
+glue instructions written after draw do not take effect until the next time draw or render is called.
+Multiple objects can be glued to the same surface (for example, several wheels attached to a car body).
+All of them will then move together automatically during animation.
+
+`,
+            "animate.transparent": `**animate.transparent** - attribute
+
+To animate an objects transparency, use the animate and transparent attributes together.
+This provides an easy way to create fade in and fade out effects in a scene.
+
+For example, a magical treasure could slowly appear out of nowhere — perfect for this kind of animation.
+
+You can also fade the same object in and out multiple times using different values within a single animation.
+
+Syntax:
+objectName.animate.transparent = value to value
+objectName.animate.transparent = value to value to value....
+
+Example – Transparency animation: 
+10 box1.size = (2,2,2)
+20 box1.move = (0,2,0)
+30 box1.animate.transparent = 80 to 20 to 50 to 0
+40 box1.animate.time = 3
+50 box1.draw
+
+
+Explanation:
+The box fades in and out at different transparency levels.
+100% means the box is invisible, while 0% means it is fully visible. 
+
+`,
+            "combine.animations": `**combine.animations** - instruction
+
+combine.animations merges all active animations linked to the object into one continuous motion. This allows multiple animation tracks — such as move, rotate, and orbit — to be played together as a single combined sequence.
+
+The instruction has no value and is written without =.
+It only affects the animation data, not the object’s immediate appearance or position.
+
+Syntax:
+objectName.combine.animations
+
+Exempel: 
+box1.size=(2,2,2)
+box1.animate = (0,0,0) to (5,0,0)
+box1.animate.rotate = (0,0,0) to (0,180,0)
+box1.combine.animations
+box1.draw
+
+Explanation:
+In this example, the movement and rotation animations are merged into one sequence and then displayed when draw is executed. 
+
+Example: Planet Rotating Around the Sun 
+10 sun1.prop.size = 2
+20 sun1.prop.color = yellow
+30 sun1.move = (0,4,0)
+40 sun1.draw
+
+50 sphere1.size = 1
+60 sphere1.color = blue
+70 sphere1.move = (0,3,0)
+75 sphere1.color = white
+80 sphere1.animate.orbit = (7, 0, 0, 0, forward)
+90 sphere1.animate.orbit.time = 10
+95 sphere1.image = "https://static.wixstatic.com/media/74104a_d0c0c87717ef4464b6fa8cb5e8fa38f8~mv2.jpg"
+100 sphere1.animate.loop = 5
+110 sphere1.animate.rotate = (0,0,0) to (0,360,0)
+120 sphere1.animate.rotate.time = 5
+130 sphere1.combine.animations
+140 sphere1.draw
+
+Explanation:
+animate.orbit defines the planet’s path around the sun.
+animate.rotate makes the planet spin around its own axis.
+combine.animations merges these into a single combined animation.
+Finally, draw displays the result.
+
+Without combine.animations, the planet’s rotation and orbit would run separately and look disjointed. With it, both animations are synchronized into a realistic, continuous planetary motion.
+
+`,
+            "animate.rotate": `**animate.rotate** - attribute
+
+The animate.rotate attribute is used to create rotating animations around an objects own axis in 3D Basic. Two attributes are used together: animate and rotate.
+Rotation values are specified in degrees along the X, Y, and Z axes. 
+
+Syntax
+objectName.animate.rotate = (x1,y1,z1) to (x2,y2,z2)
+
+Example: 
+10 box1.size=(2,2,2)
+20 box1.move=(0,4,0)
+30 box1.animate.rotate = (0, 0, 0) to (0, 360, 0)  
+40 box1.animate.time = 5 sec  
+50 box1.draw
+
+Explanation
+In this example, box1 rotates a full 360 degrees around the Y-axis over a duration of 5 seconds. 
+
+
+`,
+            "to": `**to** - instruction
+
+Description
+In 3D Basic, the keyword TO is used to define a target, an end value, or a destination for an operation. It tells the system where something is going or which value should be reached.
+
+TO is used in several different contexts, such as loops, color transitions, animations, object connections, and shape definitions.
+
+
+
+1.TO in loops (FOR) -------------------
+When TO is used in a FOR loop, it defines the final value of the loop counter. 
+
+Example
+for varX = 1 to 5
+
+Here:
+the loop starts at 1
+the loop continues until varX reaches 5
+
+
+
+2. TO in color transitions ----------------
+TO can be used to describe a transition between two colors. 
+
+Example
+box1.linear = red to yellow
+
+Here:
+the object box1 gets a linear color gradient
+the color changes from red to yellow
+
+
+
+3.TO in animations (movement) -----------------
+In animations, TO is used to define one or more target positions. 
+
+
+Example
+box1.animate = (0,1,0) to (5,1,0) to (5,5,0)
+
+Here:
+the object starts at (0,1,0)
+moves first to (5,1,0)
+then continues to (5,5,0)
+
+Multiple TO keywords can be used to create movement in several steps.
+
+
+
+4. TO in value animations -------------
+TO can also be used to animate a single value, such as camera zoom. 
+
+Example
+camera1.animate.zoom = 16 to 200
+
+Here:
+the camera zoom is animated
+from the value 16
+to the value 200
+
+
+
+5. TO in object connections (GLUE) ---------------
+In the glue instruction, TO specifies which parts should be connected. 
+
+Example
+glue box1.b1 to box2.b1 = true
+
+Here:
+box1.b1 is connected to box2.b1
+the objects remain attached while the value is true
+
+
+
+6. TO in polygon and shape definitions -----------
+When creating polygons, TO is used to define the corner points in order. 
+
+Example
+polygon1.size = (0,0,0) to (5,0,0) to (5,5,0) to (0,5,0)
+
+Here:
+each TO marks the next corner
+together, the points form a four-sided shape
+
+
+Summary
+TO is used in 3D Basic to:
+define end values (loops and animations)
+describe transitions (color, zoom, movement)
+connect objects or object parts
+define points in shapes and polygons
+
+
+
+`,
+            "time": `**time** - attribute
+
+The time attribute is used to specify how long an animation or effect should run.
+The value is given in time units such as seconds (sec), milliseconds (ms), minutes (min), or hours (h).
+If no unit is specified, the value is assumed to be in seconds. 
+
+Syntax:
+objectName.attribute.time = value
+
+• objectName – the name of the object being animated or affected.
+• attribute – the attribute being controlled, such as rotate, zoom, shake, or animate.
+• value – the duration of the animation (e.g., 3 sec, 500 ms, 2 min). 
+
+
+Example 1 – The animation lasts 3 seconds: 
+10 box1.size=(2,2,2)
+20 box1.move=(0,1,0)
+30 box1.animate=(0,1,0) to (0,1,5)
+40 box1.animate.time=3
+50 box1.draw
+
+
+Example 2 – The box shakes for 5 seconds: 
+10 box1.size=(2,2,6)
+20 box1.move=(0,3,0)
+30 box1.shake=(0,0.5,0.5)
+40 box1.shake.speed = 10
+50 box1.shake.time=5
+60 box1.draw
+
+
+
+`,
+            "ambient": `**ambient** - object
+
+Ambient light is used to create an even, soft illumination across the entire scene.
+You can have several ambient lights active at the same time, but their combined intensity will never exceed 100%.
+If you mix many ambient lights, 3D objects may appear flat or unnatural, since shadows are mostly removed. 
+
+Syntax for ambient objects 
+ambientName.intensity = 0–100     		     ' light intensity
+ambientName.color = hex/colorname        	    ' light color
+ambientName.visible = true/false 		          ' toggles the light on/off
+ambientName.draw                 			  ' renders the light
+
+
+
+Exampel - Guess the resulting light color from this program: 
+10 ambient1.intensity = 100
+20 ambient1.color = red
+30 ambient1.draw
+40 ambient2.intensity = 100
+50 ambient2.color = green
+60 ambient2.draw
+70 box1.size = (2,2,2)
+80 box1.move = (0,1,0)
+90 box1.draw
+
+
+Tip
+You can always restore the default lighting by pressing the LIGHTS button in the menu.
+This is useful when you want to quickly return to normal working light.
+
+
+`,
+            "bowl": `**bowl** - object
+
+The Bowl object is used to create bowl-shaped objects in 3D Basic, such as bowls, deep plates, or buckets. The object is drawn as an open, circular shape, without a lid. 
+
+Syntax 
+bowlName.size = (radius, height)
+
+radius – defines how wide the bowl is
+height – defines how deep the bowl is
+
+Example – drawing a large cake stand 
+10 bowlTart.size = (5, 1)
+20 bowlTart.move = (0, 1.6, 0)
+30 bowlTart.draw
+
+Tip
+If the object is not visible, it may have been drawn below the grid in the view window.
+This can easily be fixed by using the move attribute to position the bowl at the desired height in the 3D space.
+
+
+`,
+            "rain": `**rain** - attribute
+
+Raindrops are elongated and appear more like small streaks that move quickly downward.
+This creates a sense of speed and weight, making the rain feel more intense than snow.
+Perfect for storms, dramatic scenes, or realistic rainfall. 
+
+Syntax:
+particleName.rain.intensity = value
+particleName.rain.color = color/hex
+particleName.rain.speed = value
+particleName.rain.time = value
+particleName.draw
+
+Example with multiple rain layers (recommended): 
+10 background.color = black
+20 particle1.rain.intensity = 3000
+30 particle1.rain.color = steelblue
+40 particle1.rain.speed = 70
+50 particle2.rain.intensity = 2000
+60 particle2.rain.color = blackvelvet
+70 particle2.rain.speed = 20
+80 particle3.rain.intensity = 1500
+90 particle3.rain.color = paynesgrey
+100 particle3.rain.speed = 100
+110 render
+
+
+`,
+
+            "volume": `**volume** - attribute
+
+The volume attribute controls the sound volume of a sound object, expressed as a percentage. The value can be set between 0 (silent) and 100 (maximum volume). If no value is specified, the default volume is 100. 
+
+Syntax:
+soundName.volume = value
+
+value – sets the volume in percent (0–100).
+0 = completely silent
+100 = maximum volume
+
+
+Example 1 – play sound at 70% volume 
+10 sound1.musicfile = "background.wav"
+20 sound1.volume = 70   ' 70% volym
+30 sound1.play
+
+Example 2 – mute the sound completely 
+10 sound1.musicfile = "alert.wav"
+20 sound1.volume = 0    ' ljudet blir tyst
+30 sound1.play
+
+Example 3 – drum sound at half volume 
+10 sound1.noicesynth=100
+20 sound1.notes="c8 c8 c8 c8 d d d d d"
+30 sound1.volume=50
+40 sound1.play 
+
+
+
+`,
+            "confetti": `**confetti** - attribute
+
+The confetti attribute creates a rain of confetti particles in customizable colors. The effect works best on dark backgrounds due to its semi-transparent appearance. If no time value is set using time, the confetti effect will loop endlessly. 
+
+
+Syntax 
+particleName.confetti.intensity = value    	 ' number of particles
+particleName.confetti.color = color/hex    	 ' color name or hex value
+particleName.confetti.speed = value        	 ' falling speed
+particleName.confetti.time = value         	 ' duration in sec
+particleName.draw                            		 ' draws the particles
+
+
+Exampel - Confetti in various colors falling from the sky – infinite loop: 
+10 background.color = black
+20 particle1.confetti.intensity = 500
+30 particle1.confetti.color = barbie
+40 particle1.confetti.speed = 20
+50 particle2.confetti.intensity = 500
+60 particle2.confetti.color = purple
+70 particle2.confetti.speed = 5
+80 particle3.confetti.intensity = 500
+90 particle3.confetti.color = red
+100 particle3.confetti.speed = 10
+110 particle4.confetti.intensity = 500
+120 particle4.confetti.color = gold
+130 particle4.confetti.speed = 25
+140 render
+
+
+
+
+`,
+            "calc.clock": `**calc.clock** - math
+
+In 3D Basic, time is handled as pure mathematics.
+The function calc.clock() calculates a time value and assigns it to a variable.
+You can then use that variable however you like: for text, animations, colors, movements, and more. 
+
+Syntax:
+calc.clock(timeloop, timespeed) = varVariable
+
+
+PARAMETERS
+timeloop – How long the loop runs before it resets
+(e.g., 24 for a 24-hour cycle).
+timespeed – The speed and direction of time:
+Positive value = forward
+Negative value = backward
+
+
+Example 1 – Standard clocks 
+10 calc.clock(24, 24) = varClock24    ' standard 24-hour clock
+20 calc.clock(12, 12) = varClock12    ' standard 12-hour clock
+30 print "The time in Sweden is: " + varClock24
+40 print "The time in England is: " + varClock12
+
+
+Example 2 – Clock with a ten-hour loop 
+10 calc.clock(10, 10) = varTime10
+20 print varTime10
+
+
+Example 3 – Strange alien clock with movement 
+10 calc.clock(5.3, -10) = varStrangeClock
+20 text1.caption = varStrangeClock
+30 text1.font = "Alien"
+40 text1.fontsize = 24
+50 text1.fontcolor = green
+60 text1.animate = (0,4,0) to (10,4,0) to (0,4,0)
+70 text1.animate.loop = true    ' infinite loop
+80 text1.draw
+
+
+ADVANTAGES OF calc.clock()
+Simple and consistent syntax
+Time = pure math → no extra objects or attributes needed
+Supports forward/backward time, alternative time systems, slow motion, and fast forward
+Works for text, animations, simulations, colors, and visual effects
+Perfect for games, art, and experimenting with alternative time cycles
+
+
+
+`,
+            "animate.size": `**animate.size** - attribute
+
+In 3D Basic, you can also animate the size of objects.
+This is done by combining the animate and size attributes.
+All values are given in meters, following the metric system. 
+
+Syntax:
+objectName.animate.size = (x1,y1,z1) to (x2,y2,z2)
+objectName.animate.size = (x1,y1,z1) to (x2,y2,z2) ... to (xN,yN,zN)
+
+Example – Size animation: 
+10 box1.size = (2,2,2)
+20 box1.move = (0,2,0)
+30 box1.animate.size = (2,2,2) to (5,5,5) to (2,5,1)
+40 box1.animate.time = 3
+50 box1.draw
+
+Explanation:
+In this example, box1 grows from 2×2×2 meters to 5×5×5 meters,
+then changes into a stretched shape of 2×5×1 meters over 3 seconds. 
+
+
+
+`,
+            "triangle": `**triangle** - object
+
+triangle object is an alias for polygon and works exactly the same way.
+It is included to make it easier to create triangles, since many users naturally think in terms of “triangle” rather than “polygon.”
+
+triangle is typically used with three points, but it supports all the same properties, materials, and behaviors as polygon.
+
+For full details on fill, edges, thickness, materials, animation, and more, see the polygon section.
+
+
+`,
+            "calc.dice": `**calc.dice** - math
+
+Generates a random number between two values 
+calc.dice(A,B) is used to generate a random number within a specified range. The function can return either integers or decimals depending on the values you provide. It replaces the older RND function and makes your code cleaner and easier to read. 
+
+Syntax 
+calc.dice(A,B) = varX
+
+Parameters
+A – The lowest value in the range.
+B – The highest value in the range.
+varX – The variable that receives the random result.
+
+
+Example 1 – Random integer (1–6) 
+10 calc.dice(1,6) = varDICER
+20 print "You rolled: " + varDICER
+Generates an integer between 1 and 6, just like rolling a physical dice. 
+
+Example 2 – Random decimal (0.1–0.9) 
+10 calc.dice(0.1,0.9) = varRandom
+20 print "Random value: " + varRandom
+
+Example 3 – Random negative number (-10 to -6) 
+10 calc.dice(-6,-10) = varRandom
+20 print "Negative value: " + varRandom
+The function works even if A and B are written in reverse order. 
+
+
+Description
+If A and B are integers → the result will be an integer.
+If A or B is a decimal → the result will be a decimal.
+No rounding or conversion is needed – calc.dice handles everything automatically.
+The function determines which value is lowest and highest, even if you swap them.
+
+
+When and why to use calc.dice
+Random choices: dice rolls, card draws, loot drops.
+Gameplay variation: enemy placement, speed, effects.
+Smooth variation using decimals: brightness, movement, positions.
+Great for writing shorter, cleaner and more readable cod
+
+
+Tips
+Always use the var- prefix for variables that store results.
+No need for INT() – integer handling is automatic.
+Negative ranges work without any extra steps.
+
+
+
+`,
+            "grid": `**grid** - object
+
+When you start 3D Basic, the first thing you see in the view window is a grid.
+This default grid is named grid1, and it acts as the program’s standard reference grid.
+If you want to modify, move, or hide the grid that appears at startup, you must refer to grid1.
+
+For example, to hide it:
+grid1.visible = false
+Then press Run to apply the change.
+
+You can create as many grids as you like, but make sure to use new names such as grid2, gridNewWorld, or gridMY. Avoid creating another grid with the name grid1, since that name is already reserved for the default grid.
+Grids can also be moved and rotated using move and rotate, allowing you to build multiple “worlds” inside the same scene.
+
+What is a grid?
+A grid is a pattern of squares arranged in rows and columns, similar to a chessboard.
+Each square automatically receives a unique internal name beginning with the letter G followed by a number — for example g79. 
+
+This makes it easy to reference, color, or hide individual cells.
+grid1 is commonly used both as a visual guide and as a reference surface for placing and aligning objects. By default, each cell measures 1×1 meter.
+
+
+Syntax 
+gridName.size = (columns, rows, cellWidth, cellHeight)
+gridName.faces = true       ' show cell names
+gridName.faces = false      ' hide cell names
+
+
+Parameters for size
+1. columns – number of columns (x-axis)
+2. rows – number of rows (y-axis)
+3. cellWidth – width of each cell
+4. cellHeight – height of each cell
+
+
+
+Example 1 – Standard grid with colors 
+10 grid1.size = (8, 8, 1, 1)       	   	' 8×8 cells, each 1×1 meter
+20 grid1.faces = true               	  	' show cell names
+30 grid1.g79.color = red              	' cell g79 turns red
+40 grid1.g1.visible = false           	' hide cell g1
+50 grid1.g80.color = blue             	' cell g80 turns blue
+60 grid1.g80.transparent = 80         ' make the cell almost transparent
+70 grid1.draw
+
+
+
+Example 2 – Moved grid 
+10 grid2.size = (6, 15, 1, 1)         	' creates a long rectangular grid
+20 grid2.move = (-15, 5, -5)          	' moves it 5 meters up and to the side
+30 grid2.draw
+
+
+Tips
+Use different values for cellWidth and cellHeight to create rectangular cells.
+Combine faces = true with colors to easily visualize grid structure.
+Use multiple grids at different positions to build complex worlds or level layouts. 
+
+
+
+`,
+
+            "capsule": `**capsule** - capsule Object
+
+The capsule object creates a 3D shape in the form of a capsule – a cylinder with two hemispherical ends.
+All geometric parameters are specified using the SIZE attribute in a fixed order.
+All measurements are given in meters.
+
+Syntax:
+capsuleName.size = (radius, height, segment, hemisphereSegment, thickness)
+
+Parameters:
+Parameter            Type         Description
+
+radius                numeric      The radius of both the cylindrical body and the spherical ends.
+height                numeric      The height of the cylindrical part (distance between the centers of the spheres).
+segment              integer      Number of segments around the body (higher = smoother surface).
+hemisphereSegment   integer      Number of subdivisions for the two hemispherical ends.
+thickness             numeric      Material thickness. 0 = thin surface only.
+
+Example: 
+10 capsule1.size = (1, 2, 32, 16, 2)
+20 capsule1.color = green
+30 capsule1.draw
+
+Example: 
+10 varRadius   = 4
+20 varHeight   = 15
+30 varSegments = 48
+40 varHSegments = 24
+50 varThick    = 2
+60 capsule1.size = (varRadius, varHeight, varSegments, varHSegments, varThick)
+80 capsule1.draw
+
+Example – Animated rotation: 
+10 capsule1.size = (5, 20, 32, 16, 2)
+20 capsule1.color = red
+30 capsule1.animate.rotate = (0, 0, 0) to (0, 360, 0)   ' full turn around the Y-axis
+40 capsule1.animate.time = 3 sec
+50 capsule1.draw
+
+
+Tips:
+segment controls the smoothness around the cylindrical part.
+hemisphereSegment controls the detail level of the spherical ends.
+A low height value makes the capsule almost spherical, while a high height value creates a long capsule.
+`,
+            "polygon": `**polygon** - object
+
+A polygon object is used to draw both simple lines and multi-corner shapes in 3D Basic.
+It is a highly flexible object: with two points you get a line, and with three or more points you get a closed polygon. 
+
+Polygons can be colored, filled, outlined, given thickness, and use all material types (gradient, pattern, image, video). They can also be animated just like any other object in the language. 
+
+How polygon works 
+Line (2 points) 
+If you specify exactly two points in .size, the object becomes a simple line between those coordinates. 
+
+Polygon (3+ points) 
+If you specify three or more points, each point is connected in order, and the last point automatically connects back to the first to form a closed shape.
+If fill = true, the interior of the polygon is filled. Otherwise, only the outline is drawn. 
+
+Syntax
+objectName.size = (x1, y1, z1) to (x2, y2, z2) to (xN, yN, zN)
+The number of points determines whether the object is a line or a polygon. 
+
+
+Example 1 – Simple line 
+10 polygon1.size = (0, 5, 0) to (5, 5, 0)
+20 polygon1.color = red           
+30 polygon1.draw
+
+Example  2– Line becoming a flat surface (filled + thickness) 
+10 polygon1.size = (0, 5, 0) to (5, 5, 0)
+20 polygon1.color = red           
+30 polygon1.thickness=3
+40 polygon1.fill=true
+50 polygon1.draw
+
+Example  3 – Filled blue polygon with a red border  
+10 polygon1.size = (0, 0, 0) to (5, 0, 0) to (5, 5, 0) to (0, 5, 0)
+20 polygon1.fill = true
+30 polygon1.color = blue
+40 polygon1.edge = true
+50 polygon1.edgecolor = red
+60 polygon1.edgesize = 2
+70 polygon1.draw
+
+
+Example 4 – Polygon as a 3D object – Wireframe 
+10 polygon1.size = (0, 1, 0) to (5, 1, 0) to (5, 5, 0) to (0, 5, 0)
+20 polygon1.thickness=3
+30 polygon1.draw
+
+
+Example 5 – Polygon as a 3D object – Filled surfaces 
+10 polygon1.size = (0, 1, 0) to (5, 1, 0) to (5, 5, 0) to (0, 5, 0)
+20 polygon1.thickness=3
+30 polygon1.fill=true
+30 polygon1.draw
+
+
+Example 6– Gradient fill and animation 
+10 polygon1.size = (0, 0, 0) to (5, 0, 0) to (5, 5, 0) to (0, 5, 0)
+20 polygon1.fill = true
+30 polygon1.linear = red to yellow
+40 polygon1.animate=(0,1,0) to (5,1,0)
+40 polygon1.draw
+
+All gradient types are supported: linear, radial, diamond, conical. 
+
+
+
+Important tips
+For complex shapes with crossing lines, the engine may struggle to fill every area correctly.
+→ Split the shape into multiple polygons and merge them using attributes like glue.
+Edges (edge = true) can be used for both simple lines and full polygons.
+If no color is specified, the default colors are used (gray for fills, black for edges).
+If a polygon lies completely flat in 2D space, it might be hard to see depending on camera angles.
+→ Slightly adjust the camera position.
+
+
+
+triangle
+the triangle object is an alias for polygon and works exactly the same way.
+It is included to make it easier to create triangles, since many users naturally think in terms of “triangle” rather than “polygon.”
+triangle is typically used with three points, but it supports all the same properties, materials, and behaviors as polygon. For full details on fill, edges, thickness, materials, animation, and more, see the polygon section above.
+
+
+`,
+            "exit": `**exit** - instruction
+
+The exit instruction is used to terminate a running program.
+When exit is executed, the program immediately stops, and any code that follows will not be executed. After exit, the environment returns to the default view – the code and output windows.
+
+Syntax 
+exit
+
+Explanation
+exit can be used anywhere in the program to stop execution.
+If used inside a subroutine, it will stop the entire program, not just that subroutine.
+Any code placed after exit will not run.
+
+
+Example 1 – Simple usage 
+10 text1.caption = "The game is over!"
+20 text1.draw
+30 sleep 2 sec
+40 exit
+When line 40 is reached, the program ends immediately after showing the message. 
+
+Example 2 – Inside a subroutine 
+SUB subGameOver
+    text1.caption = "Game Over!"
+    text1.draw
+    sleep 1 sec
+    exit      		' Immediately stops the entire program
+END SUB
+exit here ends the program completely, even though the subroutine itself isn’t finished. 
+
+Example 3 – Interrupted program 
+10 box1.size = (2, 2, 2)
+20 box1.color = red
+30 box1.draw
+40 exit
+50 box2.size = (2, 2, 2)
+60 box2.color = blue
+70 box2.draw
+Only the red box is drawn — the blue one is skipped because the program stops at line 40.  
+
+
+Usage
+exit can be used in the main program to end execution.
+exit can also be used inside a subroutine to immediately stop the entire program.
+If you don’t want the subroutine to stop everything, let it return control to the main program instead.
+
+
+Tips
+exit is different from END SUB and END IF, which only end parts of a larger program.
+If no exit command is used, the program still ends automatically after the last line is executed.
+
+`,
+
+            "size": `**size** - attribute
+
+The size attribute is used to define the dimensions of an object in 3D Basic.
+All size values are measured in meters, following the metric system.
+
+⚠️Exception
+For objects drawn in 2D, such as text and window, the size is given in points instead of meters.
+
+
+Syntax
+objectName.size = (value)
+
+
+Explanation
+The format of the parameter depends on the type of object:
+Boxes, spheres, and cylinders use up to three numbers that define length, height, or radius.
+More complex shapes, such as triangle and polygon, may require several coordinates to define their form.
+Text and window objects use point size (not meters).
+
+
+Example 1 – Basic 3D Objects 
+10 sphere1.size = 2              ' Sphere with radius 2 m
+20 cylinder1.size = (1, 5)     ' Cylinder with radius 1 m and height 5 m
+40 text1.fontsize = 24          ' Font size: 24 points
+50 text1.thickness = 1          ' Letters 1 meter thick
+60 render
+
+
+Example 2 – 2D Window 
+10 window1.size = (500, 300,0)            ' Point size (width, height,z-plane)
+20 window1.caption = "Hello World"        ' Displayed text
+30 window1.fontsize = 12
+40 window1.draw
+
+ 
+Example 3 – Using Variables 
+10 varWidth = 15
+20 varHeight = 10
+30 varDepth = 8
+40 box1.size = (varWidth, varHeight, varDepth)
+50 box1.draw
+
+
+Tip
+Different object types interpret size differently.
+Always check the documentation for the specific object you are using.`
+        };
+        
+        // ============================================
+        // PROGRAM LOGIC (No need to edit below)
+        // ============================================
+        
+        let currentView = 'list'; // 'list' or 'manual'
+        let allWords = [];
+        
+        // Initialize the program
+        function init() {
+            allWords = Object.keys(manualData).sort();
+            showWordList();
+        }
+        
+        // Show the word list
+        function showWordList() {
+            currentView = 'list';
+            document.getElementById('wordListView').style.display = 'block';
+            document.getElementById('manualView').classList.remove('active');
+            document.getElementById('backButton').classList.remove('active');
+            document.getElementById('searchInput').value = '';
+            renderWordList(allWords);
+        }
+        
+        // Render word list
+        function renderWordList(words) {
+            const listView = document.getElementById('wordListView');
+            
+            if (words.length === 0) {
+                listView.innerHTML = '<div class="no-results">No commands found</div>';
+                return;
+            }
+            
+            let html = '<div class="word-list">';
+            words.forEach(word => {
+                html += `<div class="word-item" onclick="showManual('${word}')">${word}</div>`;
+            });
+            html += '</div>';
+            
+            listView.innerHTML = html;
+        }
+        
+        // Show manual for a specific word
+        function showManual(word) {
+            currentView = 'manual';
+            document.getElementById('wordListView').style.display = 'none';
+            document.getElementById('manualView').classList.add('active');
+            document.getElementById('backButton').classList.add('active');
+            document.getElementById('wordTitle').textContent = word;
+            document.getElementById('manualText').textContent = manualData[word];
+        }
+        
+        // Filter words based on search
+        function filterWords() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (currentView === 'list') {
+                const filteredWords = allWords.filter(word => 
+                    word.toLowerCase().includes(searchTerm)
+                );
+                renderWordList(filteredWords);
+            }
+        }
+        
+        // Initialize on page load
+        window.onload = init;
+    </script>
+</body>
+</html>
