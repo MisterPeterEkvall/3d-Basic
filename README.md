@@ -73,7 +73,7 @@ This demonstrates the core idea: very small programs that produce immediately vi
 ## Contact & Links
 
 - Maintainer: Peter Ekvall (MisterPeterEkvall)
-- Demo: https://misterekvall.wixsite.com/peter-ekvall-store/team-3-62
-- Manual: https://misterekvall.wixsite.com/peter-ekvall-store/team-3-51
+- 3D BASIC V7.5: https://threedbasic.wixsite.com/3d-basic/team-3
+- Manual: https://threedbasic.wixsite.com/3d-basic/team-3-1
 
 
