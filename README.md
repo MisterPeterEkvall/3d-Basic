@@ -6,10 +6,8 @@
 - Demo: A first working demo exists.
 - Goal: Keep the language simple and approachable while enabling creation of interesting 3D scenes and basic interactivity.
 
-## Demo & Documentation
-- Live demo: https://misterekvall.wixsite.com/peter-ekvall-store/team-3-62
-- Online manual: https://misterekvall.wixsite.com/peter-ekvall-store/team-3-51
-- Example scenes: see the `examples/` folder
+## Documentation
+- Online manual: https://threedbasic.wixsite.com/3d-basic/team-3-1
 
 ## Why 3D Basic?
 - Minimal syntax aimed at beginners and artists
